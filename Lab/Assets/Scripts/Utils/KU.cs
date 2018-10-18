@@ -117,6 +117,18 @@ public class KU : MonoBehaviour
             logPanelImage.enabled = false;
         Destroy(logText.gameObject);
     }
+
+    public static bool Raycast(Vector3 origin, Vector3 direction, out RaycastHit hitInfo, float maxDistance = Mathf.Infinity, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+    {
+        Debug.DrawRay(origin, direction * Mathf.Clamp(maxDistance, 0, 999f), Color.red, 1f);
+        return Physics.Raycast(origin, direction, out hitInfo, maxDistance, layerMask, queryTriggerInteraction);
+    }
+
+    public static bool Raycast(Vector3 origin, Vector3 direction, float maxDistance = Mathf.Infinity, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+    {
+        Debug.DrawRay(origin, direction * maxDistance, Color.red, 1f);
+        return Physics.Raycast(origin, direction, maxDistance, layerMask, queryTriggerInteraction);
+    }
 }
 
 public static class KUExtensions

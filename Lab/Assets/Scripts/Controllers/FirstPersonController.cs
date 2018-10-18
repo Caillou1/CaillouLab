@@ -18,8 +18,6 @@ public class FirstPersonController : MonoBehaviour {
     private Transform fpsTransform;
     private Rigidbody fpsRigidbody;
     private Transform cameraTransform;
-    private float bobbingTimer = 0.0f;
-    private float midpoint = .5f;
     private Vector3 targetVelocity = Vector3.zero;
 
     private void Start()
@@ -34,6 +32,7 @@ public class FirstPersonController : MonoBehaviour {
 
     private void LateUpdate()
     {
+        KU.Raycast(fpsTransform.position, cameraTransform.forward, 100f);
         ApplyRotation();
         if (BobbingEnabled)
         {
@@ -48,40 +47,6 @@ public class FirstPersonController : MonoBehaviour {
 
     private void ApplyHeadBobbing()
     {
-        float waveslice = 0;
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        float speed = BobbingSpeedFactor * targetVelocity.magnitude;
-
-        Vector3 localPos = cameraTransform.localPosition;
-
-        if(Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
-        {
-            bobbingTimer = 0;
-        } else
-        {
-            waveslice = Mathf.Sin(bobbingTimer);
-            bobbingTimer += speed;
-            if(bobbingTimer > Mathf.PI * 2)
-            {
-                bobbingTimer -= Mathf.PI * 2;
-            }
-        }
-
-        if(waveslice != 0)
-        {
-            float translateChange = waveslice * BobbingAmount;
-            float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
-            totalAxes = Mathf.Clamp(totalAxes, 0f, 1f);
-            translateChange *= totalAxes;
-            localPos.y = midpoint + translateChange;
-        } else
-        {
-            localPos.y = midpoint;
-        }
-
-        cameraTransform.localPosition = localPos;
     }
 
     private void ApplyRotation()

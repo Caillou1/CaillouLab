@@ -238,6 +238,7 @@ MonoBehaviour:
   DefaultLogText: {fileID: 114855774929951658, guid: d4f87c7d57fcdc2439246c0008e1cafc,
     type: 2}
   UseLogPanel: 0
+  OpenConsoleKey: 0
 --- !u!114 &114999740420046506
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -279,7 +280,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 999
   m_TargetDisplay: 0
 --- !u!224 &224050562680266178
 RectTransform:
