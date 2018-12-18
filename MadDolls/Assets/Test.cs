@@ -19,7 +19,8 @@ public class Test : MonoBehaviour
             rb.useGravity = false;
             rb.isKinematic = true;
             var newRbs = rb.GetComponentsInChildren<Rigidbody>();
-            Process(newRbs);
+            if(newRbs.Length > 1)
+                Process(newRbs);
         }
     }
 }
