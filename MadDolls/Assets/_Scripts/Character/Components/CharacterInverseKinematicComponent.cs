@@ -1,62 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DollController : MonoBehaviour
+public class CharacterInverseKinematicComponent : CharacterComponent
 {
-    public float MaxMovementSpeed = 5f;
-    public float Acceleration = 5f;
-    public float Deceleration = 5f;
-    public float RotationSpeed = 5f;
-
-    private Vector3 velocity;
-    private float currentSpeed;
-    private Rigidbody rigidBody;
-    private Transform tf;
-
-    //Foot cycle system
     public bool EnableFootCycleDebug = true;
     public Transform FootCycleOrigin;
     public float MaxFootCycleRadius = .5f;
     public float MaxFootCycleRotationSpeed = 50f;
+
     private Vector2 footCycleOrigin;
     private float footCycleRadius;
     private float footCycleRotation;
 
-    //Pickup System
-    public float PickupRadius = 2f;
-
-    public Vector3 InputDirection { get; private set; }
-    public Vector3 Forward { get
-        {
-            return (velocity.magnitude > .01f) ? velocity.normalized : tf.forward;
-        }
-    }
-
-    private void Awake()
-    {
-        tf = transform;
-        rigidBody = GetComponent<Rigidbody>();
-    }
-
     private void Update()
     {
-        UpdateInputDirection();
-        UpdateSpeed();
-        RotateBody();
         UpdateFootCycle();
-        CheckForObjects();
 
-        if(EnableFootCycleDebug)
+        if (EnableFootCycleDebug)
             DebugFootCycle();
-    }
-
-    private void CheckForObjects()
-    {
-        //WIP
-        var pickups = Physics.OverlapSphere(tf.position, PickupRadius, LayerMask.GetMask("Pickup"));
-        var closests = pickups.Min(c => (c.ClosestPoint(tf.position) - tf.position).magnitude);
     }
 
     private void DebugFootCycle()
@@ -91,51 +51,19 @@ public class DollController : MonoBehaviour
 
     private void UpdateFootCycle()
     {
-        if(currentSpeed == 0 && false)
+        float currentSpeed = controlledCharacter.CharacterMovement.CurrentSpeed;
+        float maxSpeed = controlledCharacter.CharacterMovement.MaxMovementSpeed;
+
+        if (currentSpeed == 0 && false)
         {
             footCycleOrigin = Vector2.up;
             footCycleRadius = 0f;
         }
         else
         {
-            float speedFactor = currentSpeed / MaxMovementSpeed;
+            float speedFactor = currentSpeed / maxSpeed;
             footCycleRadius = speedFactor * MaxFootCycleRadius;
             footCycleRotation = (footCycleRotation + speedFactor * MaxFootCycleRotationSpeed * Time.deltaTime) % 360;
         }
-    }
-
-    private void UpdateSpeed()
-    {
-        if (InputDirection.magnitude > 0.05f)
-        {
-            currentSpeed = Mathf.Clamp(currentSpeed + Acceleration * Time.deltaTime, 0, MaxMovementSpeed);
-            velocity = Vector3.Slerp(velocity.normalized, InputDirection, RotationSpeed * Time.deltaTime) * currentSpeed;
-        }
-        else
-        {
-            currentSpeed = Mathf.Clamp(currentSpeed - Deceleration * Time.deltaTime, 0, MaxMovementSpeed);
-            velocity = velocity.normalized * currentSpeed;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        MoveBody();
-    }
-
-    private void RotateBody()
-    {
-        //rigidBody.MoveRotation(Quaternion.LookRotation((velocity.magnitude > .01f) ? velocity.normalized : tf.forward, Vector3.up));
-        tf.rotation = Quaternion.LookRotation(Forward, Vector3.up);
-    }
-
-    private void MoveBody()
-    {
-        rigidBody.MovePosition(tf.position + velocity * Time.fixedDeltaTime);
-    }
-
-    private void UpdateInputDirection()
-    {
-        InputDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
     }
 }

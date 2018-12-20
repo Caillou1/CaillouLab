@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 9191164127774526972}
   - component: {fileID: 770718447865350159}
   - component: {fileID: 3754849176006006883}
+  - component: {fileID: 3741626236384190121}
   - component: {fileID: 6154963270671538904}
   - component: {fileID: 3794150878395899896}
   m_Layer: 12
@@ -173,6 +174,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &3741626236384190121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3853300570473130832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e33e53a8b3f0c4ca41acc10306d67e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterController: {fileID: 0}
+  CharacterHealth: {fileID: 0}
+  CharacterMovement: {fileID: 0}
+  CharacterPickup: {fileID: 0}
 --- !u!114 &6154963270671538904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +202,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b47fd96c8e1e354d8fb1c6a6c09a321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementSpeed: 30
+  ControlledCharacter: {fileID: 0}
+  MaxMovementSpeed: 5
+  Acceleration: 5
+  Deceleration: 5
+  RotationSpeed: 5
+  EnableFootCycleDebug: 1
+  FootCycleOrigin: {fileID: 0}
+  MaxFootCycleRadius: 0.5
+  MaxFootCycleRotationSpeed: 50
+  PickupRadius: 2
 --- !u!153 &3794150878395899896
 ConfigurableJoint:
   m_ObjectHideFlags: 0
