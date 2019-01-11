@@ -54120,6 +54120,11 @@ PrefabInstance:
       propertyPath: m_AngularYMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3741626236384190121, guid: 18670203cf22a424dbf5ebe9884b0c52,
+        type: 3}
+      propertyPath: CharacterController
+      value: 
+      objectReference: {fileID: 1620201332}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18670203cf22a424dbf5ebe9884b0c52, type: 3}
 --- !u!1 &1010198570
@@ -87751,6 +87756,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1617835065}
   m_Mesh: {fileID: 4300072, guid: a0b3af1324b57eb498658b71d8a7c933, type: 3}
+--- !u!114 &1620201332 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6154963270671538904, guid: 18670203cf22a424dbf5ebe9884b0c52,
+    type: 3}
+  m_PrefabInstance: {fileID: 1008085478}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b47fd96c8e1e354d8fb1c6a6c09a321, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1624237708
 GameObject:
   m_ObjectHideFlags: 0

@@ -76,6 +76,10 @@ GameObject:
   - component: {fileID: 3754849176006006883}
   - component: {fileID: 3741626236384190121}
   - component: {fileID: 6154963270671538904}
+  - component: {fileID: 3785858673712335696}
+  - component: {fileID: 460447052381524942}
+  - component: {fileID: 7053818914884133752}
+  - component: {fileID: 5751969039974397281}
   - component: {fileID: 3794150878395899896}
   m_Layer: 12
   m_Name: PlayerCharacter
@@ -186,10 +190,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e33e53a8b3f0c4ca41acc10306d67e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterController: {fileID: 0}
-  CharacterHealth: {fileID: 0}
-  CharacterMovement: {fileID: 0}
-  CharacterPickup: {fileID: 0}
+  CharacterController: {fileID: 6154963270671538904}
+  CharacterHealth: {fileID: 3785858673712335696}
+  CharacterMovement: {fileID: 460447052381524942}
+  CharacterPickup: {fileID: 7053818914884133752}
+  CharacterIK: {fileID: 5751969039974397281}
 --- !u!114 &6154963270671538904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,16 +207,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b47fd96c8e1e354d8fb1c6a6c09a321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ControlledCharacter: {fileID: 0}
-  MaxMovementSpeed: 5
+--- !u!114 &3785858673712335696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3853300570473130832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd636c6da6e1f544988930d1517a5d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 999
+--- !u!114 &460447052381524942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3853300570473130832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a0e4a106fcbd849b528421710f0ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxMovementSpeed: 3
   Acceleration: 5
-  Deceleration: 5
+  Deceleration: 10
   RotationSpeed: 5
+--- !u!114 &7053818914884133752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3853300570473130832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd9536db91466d4db6ce5636bc3d26d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PickupRadius: 1
+  PickupCheckOriginTransform: {fileID: 3853300570473130833}
+--- !u!114 &5751969039974397281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3853300570473130832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c12de5a86fa244688356c895e7862d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   EnableFootCycleDebug: 1
   FootCycleOrigin: {fileID: 0}
   MaxFootCycleRadius: 0.5
   MaxFootCycleRotationSpeed: 50
-  PickupRadius: 2
 --- !u!153 &3794150878395899896
 ConfigurableJoint:
   m_ObjectHideFlags: 0
