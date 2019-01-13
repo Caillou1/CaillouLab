@@ -6,7 +6,11 @@ public interface IPickable
     Transform GetAttachTransform();
     void Pickup();
     void Drop();
+
+    void StartUse();
+    void EndUse();
     PickableType GetType();
+    
 }
 
 public enum PickableType

@@ -77,4 +77,14 @@ public abstract class Weapon : MonoBehaviour, IPickable
     {
         isFree = true;
     }
+
+    public void StartUse()
+    {
+        OnInputStart();
+    }
+
+    public void EndUse()
+    {
+        OnInputStop();
+    }
 }

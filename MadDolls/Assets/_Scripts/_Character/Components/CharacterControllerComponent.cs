@@ -27,6 +27,22 @@ public class CharacterControllerComponent : CharacterComponent
     {
         UpdateInputDirections();
 
+        if(Input.GetButtonDown("PickUp")) {
+            controlledCharacter.CharacterPickup.PickUp();
+        }
+
+        if(Input.GetButtonDown("Fire")) {
+            if(controlledCharacter.CharacterPickup.HasObjectInHands) {
+                controlledCharacter.CharacterPickup.pickedupObject.StartUse();
+            }
+        }
+
+        if(Input.GetButtonUp("Fire")) {
+            if(controlledCharacter.CharacterPickup.HasObjectInHands) {
+                controlledCharacter.CharacterPickup.pickedupObject.EndUse();
+            }
+        }
+
         if(DebugDirections)
             DebugInputDirections();
         //TO DO : setup inputs + axis

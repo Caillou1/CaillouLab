@@ -12,6 +12,7 @@ public class CharacterMovementComponent : CharacterComponent
     
     public Vector3 Forward { get
         {
+
             return (velocity.magnitude > .01f) ? velocity.normalized : controlledCharacter.characterTransform.forward;
         }
     }

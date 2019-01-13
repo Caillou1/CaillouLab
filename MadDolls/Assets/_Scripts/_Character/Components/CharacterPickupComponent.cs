@@ -6,9 +6,10 @@ public class CharacterPickupComponent : CharacterComponent
 {
     public float PickupRadius = 1f;
     public Transform PickupCheckOriginTransform;
+    public Transform PickUpHandTransform;
     public bool HasObjectInHands { get { return pickedupObject != null; } }
 
-    private IPickable pickedupObject = null;
+    public IPickable pickedupObject { get; private set;}
     private IPickable possiblePickable = null;
     private IEnumerator CheckTimer;
 
@@ -21,6 +22,7 @@ public class CharacterPickupComponent : CharacterComponent
     private void CheckForPickables()
     {
         var pickables = Physics.OverlapSphere(PickupCheckOriginTransform.position, PickupRadius, LayerMask.GetMask(new string[] { "Pickable" }));
+        Debug.Log(pickables.Length);
         if (pickables.Length > 0) {
             bool containsWeapon = pickables.Any(c =>
             {
@@ -47,6 +49,10 @@ public class CharacterPickupComponent : CharacterComponent
         {
             possiblePickable.Pickup();
             pickedupObject = possiblePickable;
+            var weapon = ((Weapon)pickedupObject);
+            weapon.transform.parent = PickUpHandTransform;
+            Debug.Log(weapon.transform.lossyScale);
+            weapon.transform.localPosition = Vector3.zero - weapon.AttachTransform.localPosition * weapon.transform.localScale.x;
         }
     }
 
