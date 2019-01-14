@@ -2,7 +2,12 @@
 
 public abstract class Weapon : MonoBehaviour, IPickable
 {
-    public Transform AttachTransform;
+    public GameObject Bullet;
+    public GameObject Case;
+    public Transform BulletOutTransform;
+    public Transform CaseOutTransform;
+    public ParticleSystem FireParticle;
+    public Transform FXTransform;
     public bool AttackLoop;
     public bool TwoHanded;
     public float TimeBetweenAttack;
@@ -21,11 +26,6 @@ public abstract class Weapon : MonoBehaviour, IPickable
     {
         ammoCount = MaxAmmunitions;
         weaponTransform = transform;
-    }
-
-    public virtual Transform GetAttachTransform()
-    {
-        return AttachTransform;
     }
 
     public bool IsFree()
@@ -49,7 +49,9 @@ public abstract class Weapon : MonoBehaviour, IPickable
 
     private void Update()
     {
-        if(isAttacking && (AttackLoop || !hasAttacked) && (Time.time - lastAttackTime) >= TimeBetweenAttack)
+        if (Input.GetKeyDown(KeyCode.Space))
+            Attack();
+        if (isAttacking && (AttackLoop || !hasAttacked) && (Time.time - lastAttackTime) >= TimeBetweenAttack)
         {
             Attack();
         }
@@ -57,10 +59,15 @@ public abstract class Weapon : MonoBehaviour, IPickable
 
     protected virtual void Attack()
     {
-        hasAttacked = true;
-        lastAttackTime = Time.time;
-        if(ammoCount > 0)
+        if (ammoCount > 0)
+        {
+            hasAttacked = true;
+            lastAttackTime = Time.time;
             ammoCount--;
+            Instantiate(FireParticle, FXTransform.position, Quaternion.LookRotation(FXTransform.forward, FXTransform.up)).Play(true);
+            Instantiate(Bullet, BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
+            Instantiate(Case, CaseOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
+        }
     }
 
     public void Pickup()

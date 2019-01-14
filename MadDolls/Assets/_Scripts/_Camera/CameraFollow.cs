@@ -4,25 +4,59 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform[] TransformsToFollow;
+    public List<Transform> Targets;
     public Vector3 CameraOffset;
+    public float CameraSmoothTime = .5f;
+    public float MinZoomFOV = 70f;
+    public float MaxZoomFOV = 40f;
+    public float MaxDistanceLimiter = 15f;
+    public float ZoomSpeed = 10f;
 
+    private Camera cameraComponent;
     private Transform tf;
+    private Vector3 velocity;
+    private Bounds bounds;
 
     void Start()
     {
         tf = transform;
+        cameraComponent = Camera.main;
     }
     
     void Update()
     {
-        Vector3 averageFollowPosition = Vector3.zero;
-        foreach(var t in TransformsToFollow)
-        {
-            averageFollowPosition += t.position;
-        }
-        averageFollowPosition /= TransformsToFollow.Length;
+        if (Targets.Count == 0)
+            return;
 
-        tf.position = Vector3.Lerp(tf.position, averageFollowPosition + CameraOffset, Time.deltaTime);
+        SetBounds();
+        Move();
+        //Zoom();
+    }
+
+    void SetBounds()
+    {
+        bounds = new Bounds(Targets[0].position, Vector3.zero);
+
+        for(int i = 1; i<Targets.Count; i++)
+        {
+            bounds.Encapsulate(Targets[i].position);
+        }
+    }
+
+    float GetGreatestDistance()
+    {
+        return Mathf.Max(bounds.size.x, bounds.size.z);
+    }
+
+    void Move()
+    {
+        tf.position = Vector3.SmoothDamp(tf.position, bounds.center + CameraOffset, ref velocity, CameraSmoothTime);
+    }
+
+    void Zoom()
+    {
+        float newFOV = Mathf.Lerp(MinZoomFOV, MaxZoomFOV, GetGreatestDistance() / MaxDistanceLimiter);
+        newFOV = Mathf.Lerp(cameraComponent.fieldOfView, newFOV, Time.deltaTime);
+        cameraComponent.fieldOfView = newFOV;
     }
 }

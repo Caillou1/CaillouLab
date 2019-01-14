@@ -3,7 +3,6 @@
 public interface IPickable
 {
     bool IsFree();
-    Transform GetAttachTransform();
     void Pickup();
     void Drop();
 
