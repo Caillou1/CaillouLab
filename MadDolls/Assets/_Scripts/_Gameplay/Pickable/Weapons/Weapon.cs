@@ -59,7 +59,7 @@ public abstract class Weapon : MonoBehaviour, IPickable
 
     protected virtual void Attack()
     {
-        if (ammoCount > 0)
+        if (ammoCount > 0 || MaxAmmunitions == -1)
         {
             hasAttacked = true;
             lastAttackTime = Time.time;
@@ -73,6 +73,8 @@ public abstract class Weapon : MonoBehaviour, IPickable
     public void Pickup()
     {
         isFree = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Rigidbody>().useGravity = false;
     }
 
     PickableType IPickable.GetType()
@@ -93,5 +95,10 @@ public abstract class Weapon : MonoBehaviour, IPickable
     public void EndUse()
     {
         OnInputStop();
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
     }
 }

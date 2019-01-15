@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RootMotion.FinalIK;
+using UnityEngine;
 
 public class CharacterInverseKinematicComponent : CharacterComponent
 {
@@ -11,12 +12,36 @@ public class CharacterInverseKinematicComponent : CharacterComponent
     private float footCycleRadius;
     private float footCycleRotation;
 
+    public AimIK ShootAimIK;
+    public Transform ShootAimTarget;
+
+    private bool IsAimingEnabled = false;
+
     private void Update()
     {
         UpdateFootCycle();
 
         if (EnableFootCycleDebug)
+        {
             DebugFootCycle();
+        }
+
+        if(IsAimingEnabled)
+        {
+            ShootAimIK.solver.polePosition = controlledCharacter.characterTransform.position + new Vector3(0, 10, 0);
+            if (controlledCharacter.CharacterController.RightStickDirection.magnitude > .01f)
+            {
+                Vector3 newPos = controlledCharacter.characterTransform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
+                ShootAimIK.solver.IKPosition = Vector3.LerpUnclamped(ShootAimIK.solver.IKPosition, newPos, Time.deltaTime * 3f);
+            }
+        }
+    }
+
+    public void EnableAiming()
+    {
+        ShootAimIK.solver.transform = controlledCharacter.CharacterPickup.pickedupObject.GetTransform();
+        ShootAimIK.enabled = true;
+        IsAimingEnabled = true;
     }
 
     private void DebugFootCycle()

@@ -24,7 +24,7 @@ public class FracturedObject : MonoBehaviour
             {
                 obj.SetActive(true);
                 if (AddForceAtImpact) obj.GetComponent<Rigidbody>().velocity = -force;
-                StartCoroutine(MoveDownCell(obj.transform, Random.Range(3, 5)));
+                //StartCoroutine(MoveDownCell(obj.transform, Random.Range(3, 5)));
             }
         }
     }

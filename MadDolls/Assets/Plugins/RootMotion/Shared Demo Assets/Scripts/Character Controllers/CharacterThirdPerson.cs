@@ -210,10 +210,10 @@ namespace RootMotion.Demos {
 		}
 
 		private void MoveFixed(Vector3 deltaPosition) {
-			// Process horizontal wall-running
-			WallRun();
-			
-			Vector3 velocity = deltaPosition / Time.deltaTime;
+            // Process horizontal wall-running
+            WallRun();
+
+            Vector3 velocity = deltaPosition / Time.deltaTime;
 			
 			// Add velocity of the rigidbody the character is standing on
 			velocity += V3Tools.ExtractHorizontal(platformVelocity, gravity, 1f);

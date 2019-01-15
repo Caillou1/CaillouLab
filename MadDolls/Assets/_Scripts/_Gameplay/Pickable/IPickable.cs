@@ -5,6 +5,7 @@ public interface IPickable
     bool IsFree();
     void Pickup();
     void Drop();
+    Transform GetTransform();
 
     void StartUse();
     void EndUse();

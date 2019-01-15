@@ -307,8 +307,8 @@ MonoBehaviour:
   FXTransform: {fileID: 1229752830059299147}
   AttackLoop: 1
   TwoHanded: 1
-  TimeBetweenAttack: 0.25
-  MaxAmmunitions: 30
+  TimeBetweenAttack: 0.2
+  MaxAmmunitions: -1
   DamagePerHit: 3
 --- !u!65 &251161677122456256
 BoxCollider:

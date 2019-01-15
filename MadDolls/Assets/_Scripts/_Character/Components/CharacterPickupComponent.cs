@@ -45,14 +45,15 @@ public class CharacterPickupComponent : CharacterComponent
 
     public void PickUp()
     {
-        if(possiblePickable != null)
+        if(pickedupObject == null && possiblePickable != null)
         {
             possiblePickable.Pickup();
             pickedupObject = possiblePickable;
             var weapon = ((Weapon)pickedupObject);
             weapon.transform.parent = PickUpHandTransform;
             weapon.transform.localPosition = Vector3.zero;
-            weapon.transform.localRotation = Quaternion.LookRotation(PickUpHandTransform.right, PickUpHandTransform.up);
+            weapon.transform.localRotation = Quaternion.LookRotation(-PickUpHandTransform.forward, -PickUpHandTransform.up);
+            controlledCharacter.CharacterIK.EnableAiming();
         }
     }
 
