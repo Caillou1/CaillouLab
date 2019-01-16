@@ -2,12 +2,16 @@
 
 public abstract class Weapon : MonoBehaviour, IPickable
 {
+    [Header("Objects")]
     public GameObject Bullet;
     public GameObject Case;
+    public ParticleSystem FireParticle;
+    [Header("Transforms")]
     public Transform BulletOutTransform;
     public Transform CaseOutTransform;
-    public ParticleSystem FireParticle;
     public Transform FXTransform;
+
+    [Header("Weapon Parameters")]
     public bool AttackLoop;
     public bool TwoHanded;
     public float TimeBetweenAttack;

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CharacterControllerComponent : CharacterComponent
 {
+    [Header("Debug")]
     public bool UseKeyboardMouse = true;
     public bool DebugDirections = true;
     public Vector3 LeftStickDirection { get; private set; }

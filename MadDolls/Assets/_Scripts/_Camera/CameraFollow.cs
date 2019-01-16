@@ -5,8 +5,12 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public List<Transform> Targets;
+
+    [Header("Movement")]
     public Vector3 CameraOffset;
     public float CameraSmoothTime = .5f;
+
+    [Header("Zoom system")]
     public float MinZoomFOV = 70f;
     public float MaxZoomFOV = 40f;
     public float MaxDistanceLimiter = 15f;

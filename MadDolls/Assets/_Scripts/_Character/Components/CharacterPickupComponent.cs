@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CharacterPickupComponent : CharacterComponent
 {
+    [Header("Pick up parameters")]
     public float PickupRadius = 1f;
     public Transform PickupCheckOriginTransform;
     public Transform PickUpHandTransform;

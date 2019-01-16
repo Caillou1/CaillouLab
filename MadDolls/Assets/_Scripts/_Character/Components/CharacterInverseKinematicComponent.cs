@@ -3,7 +3,15 @@ using UnityEngine;
 
 public class CharacterInverseKinematicComponent : CharacterComponent
 {
+    [Header("Debug")]
     public bool EnableFootCycleDebug = true;
+    public bool EnableAimDebug = true;
+
+    [Header("Aim System")]
+    public AimIK ShootAimIK;
+    public Transform ShootAimTarget;
+
+    [Header("Foot Cycle System")]
     public Transform FootCycleOrigin;
     public float MaxFootCycleRadius = .5f;
     public float MaxFootCycleRotationSpeed = 50f;
@@ -11,10 +19,7 @@ public class CharacterInverseKinematicComponent : CharacterComponent
     private Vector2 footCycleOrigin;
     private float footCycleRadius;
     private float footCycleRotation;
-
-    public AimIK ShootAimIK;
-    public Transform ShootAimTarget;
-
+    
     private bool IsAimingEnabled = false;
 
     private void Update()

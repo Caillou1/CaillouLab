@@ -2,9 +2,12 @@
 
 public class CharacterMovementComponent : CharacterComponent
 {
+    [Header("Movement")]
     public float MaxMovementSpeed = 5f;
     public float Acceleration = 5f;
     public float Deceleration = 5f;
+
+    [Header("Rotation")]
     public float RotationSpeed = 5f;
 
     private Vector3 velocity;

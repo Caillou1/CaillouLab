@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class FracturedObject : MonoBehaviour
 {
+    [Header("Physic")]
     public bool CanBreakOnCollision = true;
     public bool AddForceAtImpact = true;
+    public float MinimumForceToBreak;
+
+    [Header("Components")]
     public MeshRenderer NormalObjectRenderer;
     public Collider NormalObjectCollider;
     public Rigidbody NormalObjectRigidbody;
-    public float MinimumForceToBreak;
     public GameObject[] ObjectFracturedCells;
 
     public void Break(Vector3 force, Vector3 impactPosition)
