@@ -9,14 +9,40 @@ public class CharacterMovementComponent : CharacterComponent
 
     [Header("Rotation")]
     public float RotationSpeed = 5f;
+    public float TurnRateSpeed = 2f;
+
+    [Header("Layers")]
+    public LayerMask GroundLayer;
 
     private Vector3 velocity;
     public float CurrentSpeed { get; private set; }
     
-    public Vector3 Forward { get
+    public Vector3 Forward {
+        get
         {
-
             return (velocity.magnitude > .01f) ? velocity.normalized : controlledCharacter.characterTransform.forward;
+        }
+    }
+
+    public float TurnRate {
+        get
+        {
+            var forward = new Vector3(Forward.z, 0, -Forward.x);
+            var dir = controlledCharacter.CharacterController.LeftStickDirection;
+            var dot = Vector3.Dot(forward, dir);
+            float rate = (dot > 0.25f || dot < -0.25f) ? Mathf.Sign(dot) : 0;
+            currentTurnRate = Mathf.Lerp(currentTurnRate, rate, Time.deltaTime * TurnRateSpeed);
+            return currentTurnRate;
+        }
+    }
+
+    private float currentTurnRate { get; set; }
+
+    public bool IsGrounded
+    {
+        get
+        {
+            return Physics.Raycast(controlledCharacter.characterTransform.position + Vector3.up, Vector3.down, 1.25f, GroundLayer);
         }
     }
 
