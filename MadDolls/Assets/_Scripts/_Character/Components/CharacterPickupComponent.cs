@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using RootMotion.Dynamics;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class CharacterPickupComponent : CharacterComponent
     public Transform PickupCheckOriginTransform;
     public Transform PickUpHandTransform;
     public bool HasObjectInHands { get { return pickedupObject != null; } }
+
+    public PropRoot PropRootRightHand;
 
     public IPickable pickedupObject { get; private set;}
     private IPickable possiblePickable = null;
@@ -23,7 +26,6 @@ public class CharacterPickupComponent : CharacterComponent
     private void CheckForPickables()
     {
         var pickables = Physics.OverlapSphere(PickupCheckOriginTransform.position, PickupRadius, LayerMask.GetMask(new string[] { "Pickable" }));
-        
         if (pickables.Length > 0) {
             bool containsWeapon = pickables.Any(c =>
             {
@@ -51,9 +53,7 @@ public class CharacterPickupComponent : CharacterComponent
             possiblePickable.Pickup();
             pickedupObject = possiblePickable;
             var weapon = ((Weapon)pickedupObject);
-            weapon.transform.parent = PickUpHandTransform;
-            weapon.transform.localPosition = Vector3.zero;
-            weapon.transform.localRotation = Quaternion.LookRotation(-PickUpHandTransform.forward, -PickUpHandTransform.up);
+            PropRootRightHand.currentProp = weapon.propTemplate;
             controlledCharacter.CharacterIK.EnableAiming();
         }
     }

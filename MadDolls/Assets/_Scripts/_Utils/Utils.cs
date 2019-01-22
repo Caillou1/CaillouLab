@@ -37,6 +37,7 @@ public static class Utils
 
     public static void DebugSphere(Vector3 center, float radius, Color color, float duration)
     {
+        radius /= 2f;
         for(int i = 0; i< sphereTriangles.Count - 3; i+=3)
         {
             Debug.DrawLine(center + sphereVertices[sphereTriangles[i]] * radius, center + sphereVertices[sphereTriangles[i + 1]] * radius, color, duration);

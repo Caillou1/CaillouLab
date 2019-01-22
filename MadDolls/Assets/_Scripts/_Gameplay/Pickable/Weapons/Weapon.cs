@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RootMotion.Dynamics;
+using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour, IPickable
 {
@@ -18,7 +19,7 @@ public abstract class Weapon : MonoBehaviour, IPickable
     [Min(-1)]
     public int MaxAmmunitions;
     public int DamagePerHit;
-
+    public PropTemplate propTemplate;
     protected bool isFree = true;
     protected bool isAttacking = false;
     protected bool hasAttacked = false;

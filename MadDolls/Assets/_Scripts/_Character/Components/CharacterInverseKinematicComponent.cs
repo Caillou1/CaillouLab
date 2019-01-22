@@ -9,7 +9,6 @@ public class CharacterInverseKinematicComponent : CharacterComponent
 
     [Header("Aim System")]
     public AimIK ShootAimIK;
-    public Transform ShootAimTarget;
 
     [Header("Foot Cycle System")]
     public Transform FootCycleOrigin;
@@ -34,19 +33,36 @@ public class CharacterInverseKinematicComponent : CharacterComponent
         if(IsAimingEnabled)
         {
             ShootAimIK.solver.polePosition = controlledCharacter.characterTransform.position + new Vector3(0, 10, 0);
+            Vector3 newPos;
+
             if (controlledCharacter.CharacterController.RightStickDirection.magnitude > .01f)
             {
-                Vector3 newPos = controlledCharacter.characterTransform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
-                ShootAimIK.solver.IKPosition = Vector3.LerpUnclamped(ShootAimIK.solver.IKPosition, newPos, Time.deltaTime * 3f);
+                newPos = controlledCharacter.characterTransform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
+            } else
+            {
+                newPos = controlledCharacter.characterTransform.position + controlledCharacter.CharacterMovement.Forward * 5f;
+            }
+
+            ShootAimIK.solver.IKPosition = Vector3.Slerp(ShootAimIK.solver.IKPosition, newPos, Time.deltaTime * 3f);
+            
+            if(EnableAimDebug)
+            {
+                Utils.DebugSphere(newPos, .5f, Color.green, Time.deltaTime);
+                Utils.DebugSphere(ShootAimIK.solver.IKPosition, .25f, Color.red, Time.deltaTime);
             }
         }
     }
 
     public void EnableAiming()
     {
-        ShootAimIK.solver.transform = controlledCharacter.CharacterPickup.pickedupObject.GetTransform();
         ShootAimIK.enabled = true;
         IsAimingEnabled = true;
+    }
+
+    public void DisableAiming()
+    {
+        ShootAimIK.enabled = false;
+        IsAimingEnabled = false;
     }
 
     private void DebugFootCycle()
