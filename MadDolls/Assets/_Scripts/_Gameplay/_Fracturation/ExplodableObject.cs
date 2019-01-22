@@ -18,7 +18,7 @@ public class ExplodableObject : MonoBehaviour, IExplodable
 
     public void Explode()
     {
-        if (!hasExploded)
+        if (!hasExploded || true)
         {
             hasExploded = true;
             var tf = transform;
@@ -57,9 +57,6 @@ public class ExplodableObject : MonoBehaviour, IExplodable
 
     private void OnMouseDown()
     {
-        Debug.Log(SmallExplosionPool.Instance.GetHashCode());
-        Debug.Log(MediumExplosionPool.Instance.GetHashCode());
-        Debug.Log(BigExplosionPool.Instance.GetHashCode());
         Explode();
     }
 

@@ -15,6 +15,16 @@ public class CharacterInverseKinematicComponent : CharacterComponent
     public float MaxFootCycleRadius = .5f;
     public float MaxFootCycleRotationSpeed = 50f;
 
+    public Vector3 AimDirection {
+        get
+        {
+            Vector3 dir = aimPos - controlledCharacter.characterTransform.position;
+            dir.y = 0;
+            return dir.normalized;
+        }
+    }
+
+    private Vector3 aimPos;
     private Vector2 footCycleOrigin;
     private float footCycleRadius;
     private float footCycleRotation;
@@ -32,18 +42,18 @@ public class CharacterInverseKinematicComponent : CharacterComponent
 
         if(IsAimingEnabled)
         {
-            ShootAimIK.solver.polePosition = controlledCharacter.characterTransform.position + new Vector3(0, 10, 0);
             Vector3 newPos;
+            //ShootAimIK.solver.polePosition = controlledCharacter.characterTransform.position + new Vector3(0, 10, 0);
 
             if (controlledCharacter.CharacterController.RightStickDirection.magnitude > .01f)
             {
-                newPos = controlledCharacter.characterTransform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
+                newPos = ShootAimIK.solver.transform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
             } else
             {
-                newPos = controlledCharacter.characterTransform.position + controlledCharacter.CharacterMovement.Forward * 5f;
+                newPos = ShootAimIK.solver.transform.position + controlledCharacter.CharacterMovement.Forward * 5f;
             }
-
-            ShootAimIK.solver.IKPosition = Vector3.Slerp(ShootAimIK.solver.IKPosition, newPos, Time.deltaTime * 3f);
+            aimPos = Vector3.Slerp(ShootAimIK.solver.IKPosition, newPos, Time.deltaTime * 3f);
+            ShootAimIK.solver.IKPosition = aimPos;
             
             if(EnableAimDebug)
             {
@@ -55,6 +65,7 @@ public class CharacterInverseKinematicComponent : CharacterComponent
 
     public void EnableAiming()
     {
+        ShootAimIK.solver.IKPosition = ShootAimIK.solver.transform.position + controlledCharacter.CharacterMovement.Forward * 5f;;
         ShootAimIK.enabled = true;
         IsAimingEnabled = true;
     }
