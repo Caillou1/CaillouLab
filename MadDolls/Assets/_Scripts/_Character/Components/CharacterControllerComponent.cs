@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharacterControllerComponent : CharacterComponent
 {
@@ -47,6 +48,10 @@ public class CharacterControllerComponent : CharacterComponent
         if(DebugDirections)
             DebugInputDirections();
         //TO DO : setup inputs + axis
+
+        if(Input.GetKeyDown(KeyCode.R)) {
+            SceneManager.LoadScene(0);
+        }
     }
 
     private void DebugInputDirections() {
