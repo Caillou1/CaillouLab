@@ -20,12 +20,17 @@ public abstract class APoolObject : MonoBehaviour
     public virtual void Activate()
     {
         gameObject.SetActive(true);
-        StartCoroutine(Utils.Timer(ReturnToPool, Duration, false));
+        KU.StartTimer(ReturnToPool, Duration);
     }
 
     public void SetPosition(Vector3 pos)
     {
         tf.position = pos;
+    }
+
+    public void SetRotation(Quaternion rot)
+    {
+        tf.rotation = rot;
     }
 
     public abstract void ReturnToPool();

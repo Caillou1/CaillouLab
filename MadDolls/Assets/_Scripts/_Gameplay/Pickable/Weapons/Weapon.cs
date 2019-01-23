@@ -6,7 +6,6 @@ public abstract class Weapon : MonoBehaviour, IPickable
     [Header("Objects")]
     public GameObject Bullet;
     public GameObject Case;
-    public ParticleSystem FireParticle;
     [Header("Transforms")]
     public Transform BulletOutTransform;
     public Transform CaseOutTransform;
@@ -26,6 +25,7 @@ public abstract class Weapon : MonoBehaviour, IPickable
     protected float lastAttackTime;
     protected int ammoCount;
     protected Transform weaponTransform;
+    public AudioClip WeaponSound;
 
     private void Start()
     {
@@ -38,20 +38,6 @@ public abstract class Weapon : MonoBehaviour, IPickable
         return isFree;
     }
 
-    public virtual void OnInputStart()
-    {
-        if (ammoCount > 0 || MaxAmmunitions == -1)
-        {
-            isAttacking = true;
-        }
-    }
-
-    public virtual void OnInputStop()
-    {
-        isAttacking = false;
-        hasAttacked = false;
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -62,17 +48,23 @@ public abstract class Weapon : MonoBehaviour, IPickable
         }
     }
 
-    protected virtual void Attack()
+    protected virtual bool Attack()
     {
         if (ammoCount > 0 || MaxAmmunitions == -1)
         {
             hasAttacked = true;
             lastAttackTime = Time.time;
             ammoCount--;
-            Instantiate(FireParticle, FXTransform.position, Quaternion.LookRotation(FXTransform.forward, FXTransform.up)).Play(true);
-            Instantiate(Bullet, BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
-            Instantiate(Case, CaseOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
+            var sound = LocalizedSoundPool.Instance.Get(weaponTransform.position);
+            sound.Duration = WeaponSound.length;
+            sound.Source.clip = WeaponSound;
+            sound.Source.pitch = Random.Range(.95f, 1.05f);
+            sound.Activate();
+            //Instantiate(Bullet, BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
+            //Instantiate(Case, CaseOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
+            return true;
         }
+        return false;
     }
 
     public void Pickup()
@@ -92,14 +84,18 @@ public abstract class Weapon : MonoBehaviour, IPickable
         isFree = true;
     }
 
-    public void StartUse()
+    public virtual void StartUse()
     {
-        OnInputStart();
+        if (ammoCount > 0 || MaxAmmunitions == -1)
+        {
+            isAttacking = true;
+        }
     }
 
-    public void EndUse()
+    public virtual void EndUse()
     {
-        OnInputStop();
+        isAttacking = false;
+        hasAttacked = false;
     }
 
     public Transform GetTransform()

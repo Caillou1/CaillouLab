@@ -1,9 +1,12 @@
 ﻿public class AssaultRifleWeapon : Weapon
 {
-    protected override void Attack()
+    protected override bool Attack()
     {
-        base.Attack();
-
-        //Spawn bullet + vfx
+        if (base.Attack())
+        {
+            AssaultRifleMuzzlePool.Instance.Get(FXTransform.position, FXTransform.rotation, true);
+            return true;
+        }
+        return false;
     }
 }

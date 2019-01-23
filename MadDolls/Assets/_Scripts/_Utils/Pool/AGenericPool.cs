@@ -42,6 +42,24 @@ public abstract class AGenericPool<T> : MonoBehaviour where T : APoolObject
         return obj;
     }
 
+    public T Get(Vector3 startPosition, Quaternion startRotation, bool activate = false)
+    {
+        if (objects.Count == 0)
+        {
+            AddObjects(1);
+        }
+
+        var obj = objects.Dequeue();
+
+        obj.SetPosition(startPosition);
+        obj.SetRotation(startRotation);
+
+        if (activate)
+            obj.Activate();
+
+        return obj;
+    }
+
     public void Return(T objectToReturn)
     {
         objectToReturn.Reset();

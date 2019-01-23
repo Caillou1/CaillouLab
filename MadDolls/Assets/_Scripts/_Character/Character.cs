@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RootMotion.Dynamics;
+using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -17,6 +18,7 @@ public class Character : MonoBehaviour
     public CharacterPickupComponent CharacterPickup;
     public CharacterInverseKinematicComponent CharacterIK;
     public CharacterAnimationComponent CharacterAnimation;
+    public PuppetMaster PuppetMasterComponent;
 
     public Transform characterTransform { get; private set; }
     public Rigidbody characterRigidbody { get; private set; }

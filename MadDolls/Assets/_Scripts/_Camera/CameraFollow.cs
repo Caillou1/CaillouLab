@@ -27,7 +27,7 @@ public class CameraFollow : MonoBehaviour
         cameraComponent = Camera.main;
     }
     
-    void Update()
+    void LateUpdate()
     {
         if (Targets.Count == 0)
             return;

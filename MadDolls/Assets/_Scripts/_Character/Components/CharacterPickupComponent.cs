@@ -18,8 +18,7 @@ public class CharacterPickupComponent : CharacterComponent
 
     private void Start()
     {
-        CheckTimer = Utils.Timer(CheckForPickables, .1f, true);
-        StartCoroutine(CheckTimer);
+        KU.StartTimer(CheckForPickables, .1f, true);
     }
 
     private void CheckForPickables()

@@ -15,6 +15,6 @@
 
     public void Kill()
     {
-        //Enable ragdoll
+        controlledCharacter.PuppetMasterComponent.state = RootMotion.Dynamics.PuppetMaster.State.Dead;
     }
 }
