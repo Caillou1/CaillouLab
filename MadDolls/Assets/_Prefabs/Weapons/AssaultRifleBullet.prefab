@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 853245855601283040}
   - component: {fileID: 971385936664101988}
   - component: {fileID: 8910360092022163938}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: AssaultRifleBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Duration: 5
-  BulletSpeed: 100
+  BulletSpeed: 600
   BulletDirection: {x: 0, y: 1, z: 0}
   BulletRigidbody: {fileID: 971385936664101988}
 --- !u!54 &971385936664101988
