@@ -294,7 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bullet: {fileID: 0}
   Case: {fileID: 0}
-  BulletOutTransform: {fileID: 143831768}
+  BulletOutTransform: {fileID: 1397239403}
   CaseOutTransform: {fileID: 143831768}
   FXTransform: {fileID: 1397239403}
   AttackLoop: 1
@@ -740,6 +740,50 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3992916400994180016}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &709931454
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 709931455}
+  - component: {fileID: 709931456}
+  m_Layer: 0
+  m_Name: AssaultRifleBulletPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &709931455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709931454}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1211080335}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &709931456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709931454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8454ec235f487284b99f29c3fd81f537, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 853245855601283040, guid: ffefbeb6696c82a40b691b3d4bf8f17b, type: 3}
 --- !u!114 &1034482560 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3992916401294455872, guid: 7fddf28a02b4b85439baf2cd7f7e59f8,
@@ -920,6 +964,7 @@ Transform:
   - {fileID: 20212606}
   - {fileID: 335262528}
   - {fileID: 1173715727}
+  - {fileID: 709931455}
   m_Father: {fileID: 1896919347}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -954,7 +999,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Targets:
   - {fileID: 527591173}
-  CameraOffset: {x: 0, y: 3, z: -3}
+  CameraOffset: {x: 0, y: 5, z: -5}
   CameraSmoothTime: 0.2
   MinZoomFOV: 40
   MaxZoomFOV: 70

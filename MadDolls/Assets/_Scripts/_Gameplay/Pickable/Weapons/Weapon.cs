@@ -60,6 +60,7 @@ public abstract class Weapon : MonoBehaviour, IPickable
             sound.Source.clip = WeaponSound;
             sound.Source.pitch = Random.Range(.95f, 1.05f);
             sound.Activate();
+            AssaultRifleBulletPool.Instance.Get(BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, -BulletOutTransform.forward), true);
             //Instantiate(Bullet, BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
             //Instantiate(Case, CaseOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
             return true;
