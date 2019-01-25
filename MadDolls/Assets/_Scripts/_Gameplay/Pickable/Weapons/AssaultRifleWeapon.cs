@@ -2,14 +2,10 @@
 
 public class AssaultRifleWeapon : Weapon
 {
-    protected override bool Attack()
+    protected override void Attack()
     {
-        if (base.Attack())
-        {
-            AssaultRifleBulletPool.Instance.Get(BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, -BulletOutTransform.forward), true);
-            AssaultRifleMuzzlePool.Instance.Get(FXTransform.position, FXTransform.rotation, true);
-            return true;
-        }
-        return false;
+        base.Attack();
+        AssaultRifleBulletPool.Instance.Get(BulletOutTransform.position, Quaternion.LookRotation(Quaternion.Euler(Random.value,Random.value,Random.value) * BulletOutTransform.up, -BulletOutTransform.forward), true);
+        AssaultRifleMuzzlePool.Instance.Get(FXTransform.position, FXTransform.rotation, true);
     }
 }

@@ -29,7 +29,11 @@ public class CharacterInverseKinematicComponent : CharacterComponent
     private float footCycleRadius;
     private float footCycleRotation;
     
-    private bool IsAimingEnabled = false;
+    public bool IsAimingEnabled
+    {
+        get;
+        private set;
+    }
 
     private void Update()
     {

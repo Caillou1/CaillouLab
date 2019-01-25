@@ -46,13 +46,17 @@ public class CharacterPickupComponent : CharacterComponent
 
     public void PickUp()
     {
-        if(pickedupObject == null && possiblePickable != null)
+        if(HasObjectInHands)
+        {
+            Drop();
+        }
+
+        if(possiblePickable != null)
         {
             possiblePickable.Pickup();
             pickedupObject = possiblePickable;
             var weapon = ((Weapon)pickedupObject);
             PropRootRightHand.currentProp = weapon.propTemplate;
-            controlledCharacter.CharacterIK.EnableAiming();
         }
     }
 
@@ -62,6 +66,7 @@ public class CharacterPickupComponent : CharacterComponent
         {
             pickedupObject.Drop();
             pickedupObject = null;
+            PropRootRightHand.DropImmediate();
         }
     }
 }

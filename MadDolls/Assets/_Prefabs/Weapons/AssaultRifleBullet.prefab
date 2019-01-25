@@ -90,16 +90,16 @@ TrailRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276009213002186406}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: de14c1cf59c0798438c70763f6287254, type: 2}
+  - {fileID: 2100000, guid: a025e2aeb85f3f24bb38d96b88ded345, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -122,19 +122,19 @@ TrailRenderer:
   m_Time: 0.5
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.02
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0
+        outWeight: 0
       - serializedVersion: 3
         time: 1
         value: 0
@@ -149,7 +149,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.9322949, b: 0.6745283, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -201,6 +201,7 @@ MonoBehaviour:
   BulletSpeed: 600
   BulletDirection: {x: 0, y: 1, z: 0}
   BulletRigidbody: {fileID: 971385936664101988}
+  TrailRend: {fileID: 5512584789077554420}
 --- !u!54 &971385936664101988
 Rigidbody:
   m_ObjectHideFlags: 0

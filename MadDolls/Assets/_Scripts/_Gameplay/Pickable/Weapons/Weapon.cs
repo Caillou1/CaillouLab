@@ -27,8 +27,13 @@ public abstract class Weapon : MonoBehaviour, IPickable
     protected Transform weaponTransform;
     public AudioClip WeaponSound;
 
-    [Range(0,1f)]
-    public float Precision;
+    protected bool CanAttack
+    {
+        get
+        {
+            return (isAttacking && (AttackLoop || !hasAttacked) && (ammoCount > 0 || MaxAmmunitions == -1) && (Time.time - lastAttackTime) >= TimeBetweenAttack);
+        }
+    }
 
     private void Start()
     {
@@ -43,31 +48,27 @@ public abstract class Weapon : MonoBehaviour, IPickable
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            Attack();
-        if (isAttacking && (AttackLoop || !hasAttacked) && (Time.time - lastAttackTime) >= TimeBetweenAttack)
+        if (CanAttack)
         {
             Attack();
         }
     }
 
-    protected virtual bool Attack()
+    protected virtual void Attack()
     {
-        if (ammoCount > 0 || MaxAmmunitions == -1)
-        {
-            hasAttacked = true;
-            lastAttackTime = Time.time;
-            ammoCount--;
-            var sound = LocalizedSoundPool.Instance.Get(weaponTransform.position);
-            sound.Duration = WeaponSound.length;
-            sound.Source.clip = WeaponSound;
-            sound.Source.pitch = Random.Range(.95f, 1.05f);
-            sound.Activate();
-            //Instantiate(Bullet, BulletOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
-            //Instantiate(Case, CaseOutTransform.position, Quaternion.LookRotation(BulletOutTransform.up, BulletOutTransform.forward));
-            return true;
-        }
-        return false;
+        hasAttacked = true;
+        lastAttackTime = Time.time;
+        ammoCount--;
+        PlaySound();
+    }
+
+    protected virtual void PlaySound()
+    {
+        var sound = LocalizedSoundPool.Instance.Get(weaponTransform.position);
+        sound.Duration = WeaponSound.length;
+        sound.Source.clip = WeaponSound;
+        sound.Source.pitch = Random.Range(.95f, 1.05f);
+        sound.Activate();
     }
 
     public void Pickup()

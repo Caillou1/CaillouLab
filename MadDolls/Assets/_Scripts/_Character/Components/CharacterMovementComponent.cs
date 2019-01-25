@@ -25,7 +25,7 @@ public class CharacterMovementComponent : CharacterComponent
     public Vector3 Forward {
         get
         {
-            if(controlledCharacter.CharacterPickup.HasObjectInHands) {
+            if(controlledCharacter.CharacterMovement.IsAiming) {
                 return controlledCharacter.CharacterIK.AimDirection;
             } else {
                 return (velocity.magnitude > .01f) ? velocity.normalized : controlledCharacter.characterTransform.forward;
@@ -50,6 +50,14 @@ public class CharacterMovementComponent : CharacterComponent
             return currentTurnRate;
         }
     }
+    
+    public bool IsAiming
+    {
+        get
+        {
+            return controlledCharacter.CharacterIK.IsAimingEnabled;
+        }
+    }
 
     private float currentTurnRate { get; set; }
 
@@ -69,13 +77,13 @@ public class CharacterMovementComponent : CharacterComponent
 
     private void UpdateSpeed()
     {
-        CurrentMaxMovementSpeed = controlledCharacter.CharacterPickup.HasObjectInHands ? MaxAimingMovementSpeed : MaxMovementSpeed;
+        CurrentMaxMovementSpeed = controlledCharacter.CharacterMovement.IsAiming ? MaxAimingMovementSpeed : MaxMovementSpeed;
         var input = controlledCharacter.CharacterController.LeftStickDirection;
         if (input.magnitude > 0.05f)
         {
             CurrentSpeed = Mathf.Clamp(CurrentSpeed + Acceleration * Time.deltaTime, 0, CurrentMaxMovementSpeed);
             var forwardVector = velocity.magnitude > 0.05f ? velocity.normalized : controlledCharacter.characterTransform.forward;
-            if(controlledCharacter.CharacterPickup.HasObjectInHands) {
+            if(controlledCharacter.CharacterMovement.IsAiming) {
                 velocity = Vector3.Lerp(forwardVector, input, RotationSpeed * 5 * Time.deltaTime) * CurrentSpeed;
             } else {
                 velocity = Vector3.Slerp(forwardVector, input, RotationSpeed * Time.deltaTime) * CurrentSpeed;

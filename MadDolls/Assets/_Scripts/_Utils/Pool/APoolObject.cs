@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 
 public abstract class APoolObject : MonoBehaviour
@@ -6,6 +7,7 @@ public abstract class APoolObject : MonoBehaviour
     public float Duration;
 
     private Transform tf;
+    private IEnumerator timer;
 
     private void Awake()
     {
@@ -20,7 +22,7 @@ public abstract class APoolObject : MonoBehaviour
     public virtual void Activate()
     {
         gameObject.SetActive(true);
-        KU.StartTimer(ReturnToPool, Duration);
+        timer = KU.StartTimer(ReturnToPool, Duration);
     }
 
     public void SetPosition(Vector3 pos)
@@ -34,4 +36,10 @@ public abstract class APoolObject : MonoBehaviour
     }
 
     public abstract void ReturnToPool();
+
+    public virtual void ReturnImmediate()
+    {
+        KU.StopTimer(timer);
+        ReturnToPool();
+    }
 }

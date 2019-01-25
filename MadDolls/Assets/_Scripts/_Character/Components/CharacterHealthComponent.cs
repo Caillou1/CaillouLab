@@ -1,4 +1,6 @@
-﻿public class CharacterHealthComponent : CharacterComponent
+﻿using UnityEngine;
+
+public class CharacterHealthComponent : CharacterComponent
 {
     public int MaxHealth;
     public int CurrentHealth { get; private set; }
