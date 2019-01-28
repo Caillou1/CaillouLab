@@ -1,14 +1,6 @@
 ﻿using RootMotion.Dynamics;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(CapsuleCollider))]
-[RequireComponent(typeof(CharacterControllerComponent))]
-[RequireComponent(typeof(CharacterHealthComponent))]
-[RequireComponent(typeof(CharacterMovementComponent))]
-[RequireComponent(typeof(CharacterPickupComponent))]
-[RequireComponent(typeof(CharacterInverseKinematicComponent))]
-[RequireComponent(typeof(CharacterAnimationComponent))]
 public class Character : MonoBehaviour
 {
     [Header("Player")]
@@ -23,20 +15,17 @@ public class Character : MonoBehaviour
     public CharacterAnimationComponent CharacterAnimation;
     public PuppetMaster PuppetMasterComponent;
 
-    public Transform characterTransform { get; private set; }
-    public Rigidbody characterRigidbody { get; private set; }
-
+    public Transform CharacterTransform;
+    public Rigidbody CharacterRigidbody;
 
     private void Awake()
     {
-        InitializeCharacter();
         InitializeComponents();
     }
 
-    private void InitializeCharacter()
+    private void InitializeCharacter(int playerID)
     {
-        characterTransform = transform;
-        characterRigidbody = GetComponent<Rigidbody>();
+        PlayerID = playerID;
     }
 
     private void InitializeComponents()

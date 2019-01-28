@@ -74,7 +74,7 @@ public class PlayerControllerComponent : CharacterControllerComponent
 
     private void SetRightStickFromKeyboard()
     {
-        Vector2 controlledCharacterPositionOnScreen = mainCamera.WorldToScreenPoint(controlledCharacter.characterTransform.position);
+        Vector2 controlledCharacterPositionOnScreen = mainCamera.WorldToScreenPoint(controlledCharacter.CharacterTransform.position);
         Vector2 mousePosition = Input.mousePosition;
         Vector2 dir = (mousePosition - controlledCharacterPositionOnScreen).normalized;
         RightStickDirection = new Vector3(dir.x, 0, dir.y);

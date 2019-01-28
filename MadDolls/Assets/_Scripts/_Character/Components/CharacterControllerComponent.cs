@@ -10,7 +10,7 @@ public abstract class CharacterControllerComponent : CharacterComponent
     public Vector3 RightStickDirection { get; protected set; }
 
     protected void DebugInputDirections() {
-        var pos = controlledCharacter.characterTransform.position;
+        var pos = controlledCharacter.CharacterTransform.position;
         Debug.DrawLine(pos, pos + LeftStickDirection, Color.blue, Time.deltaTime);
         Debug.DrawLine(pos, pos + RightStickDirection, Color.red, Time.deltaTime);
     }

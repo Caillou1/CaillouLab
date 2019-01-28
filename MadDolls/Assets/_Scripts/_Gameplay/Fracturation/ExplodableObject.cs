@@ -9,16 +9,18 @@ public enum ExplosionSize
 
 public class ExplodableObject : MonoBehaviour, IExplodable
 {
+    public bool ExplodeOnCollision = true;
     public float ExplosionRadius;
     public float ExplosionForce;
     public LayerMask ExplodableLayerMask;
+    public LayerMask PlayerLayerMask;
     public ExplosionSize SizeOfExplosion;
 
     private bool hasExploded = false;
 
     public void Explode()
     {
-        if (!hasExploded || true)
+        if (!hasExploded)
         {
             hasExploded = true;
             var tf = transform;
@@ -54,17 +56,37 @@ public class ExplodableObject : MonoBehaviour, IExplodable
                 }
             }
 
-            //Destroy(gameObject);
-        }
-    }
+            var players = Physics.OverlapSphere(tf.position, ExplosionRadius, PlayerLayerMask);
 
-    private void OnMouseDown()
-    {
-        Explode();
+            foreach (var player in players)
+            {
+                var health = player.GetComponent<CharacterHealthComponent>();
+
+                if (health != null)
+                {
+                    var vec = player.transform.position - tf.position;
+                    var dir = vec.normalized;
+                    var dist = vec.magnitude;
+                    float distanceFactor = Mathf.Clamp(1 - (dist / ExplosionRadius), .1f, 1f);
+                    var dmg = Mathf.RoundToInt(distanceFactor * ExplosionForce);
+                    health.ApplyDamage(dmg, dir);
+                }
+            }
+
+            Destroy(gameObject);
+        }
     }
 
     public void NotifyExplosion(Vector3 force)
     {
         Explode();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(ExplodeOnCollision && !hasExploded)
+        {
+            Explode();
+        }
     }
 }

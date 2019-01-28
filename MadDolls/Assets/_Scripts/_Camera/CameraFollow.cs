@@ -21,14 +21,25 @@ public class CameraFollow : MonoBehaviour
     private Vector3 velocity;
     private Bounds bounds;
 
+    public GameObject bomb;
+
     void Start()
     {
         tf = transform;
         cameraComponent = Camera.main;
     }
+
+    void SpawnBomb()
+    {
+        Instantiate(bomb, Targets[0].position + new Vector3(Random.Range(-15f, 15f), Random.Range(20f,30f), 0), Quaternion.identity).SetActive(true);
+    }
     
     void LateUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            KU.StartTimer(SpawnBomb, 1f, true);
+        }
         if (Targets.Count == 0)
             return;
 

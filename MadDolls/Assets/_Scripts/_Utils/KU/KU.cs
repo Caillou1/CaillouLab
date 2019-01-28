@@ -15,6 +15,7 @@ public class KU : MonoBehaviour
     private static Transform KUTransform;
     private static Canvas KUCanvas;
     private static Transform logPanelTransform;
+    private static RectTransform logPanelRectTransform;
     private static Image logPanelImage;
     private static GameObject logPanelObject;
     private static int LogNumber = 0;
@@ -39,6 +40,7 @@ public class KU : MonoBehaviour
         KUTransform = transform; 
         KUCanvas = KUTransform.GetComponentInChildren<Canvas>();
         logPanelTransform = KUCanvas.transform.Find("LogPanel");
+        logPanelRectTransform = logPanelTransform.GetComponent<RectTransform>();
         logPanelImage = logPanelTransform.GetComponent<Image>();
         logPanelObject = logPanelTransform.gameObject;
     }
@@ -81,6 +83,7 @@ public class KU : MonoBehaviour
         text.transform.SetAsFirstSibling();
         text.text = log.Message.ToString();
         text.color = log.LogColor;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(logPanelRectTransform);
         StartTimer(() => RemoveFromScreen(text, log.Duration), log.Duration);
     }
 

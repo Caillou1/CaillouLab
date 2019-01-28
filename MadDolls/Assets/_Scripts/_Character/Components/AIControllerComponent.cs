@@ -13,16 +13,7 @@ public class AIControllerComponent : CharacterControllerComponent
         if (Input.GetKeyDown(KeyCode.A)) canMove = true;
         if (canMove)
         {
-            var vec = (Player.position - controlledCharacter.characterTransform.position);
-            if (vec.magnitude > 5)
-            {
-                vec.y = 0;
-                LeftStickDirection = vec.normalized;
-            }
-            else
-            {
-                LeftStickDirection = Vector3.zero;
-            }
+            LeftStickDirection = -Vector3.forward;
         }
     }
 }

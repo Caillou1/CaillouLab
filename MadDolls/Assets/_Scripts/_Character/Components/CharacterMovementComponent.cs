@@ -28,14 +28,14 @@ public class CharacterMovementComponent : CharacterComponent
             if(controlledCharacter.CharacterMovement.IsAiming) {
                 return controlledCharacter.CharacterIK.AimDirection;
             } else {
-                return (velocity.magnitude > .01f) ? velocity.normalized : controlledCharacter.characterTransform.forward;
+                return (velocity.magnitude > .01f) ? velocity.normalized : controlledCharacter.CharacterTransform.forward;
             }
         }
     }
 
     public Vector3 Right {
         get {
-            return controlledCharacter.characterTransform.right;
+            return controlledCharacter.CharacterTransform.right;
         }
     }
 
@@ -65,7 +65,7 @@ public class CharacterMovementComponent : CharacterComponent
     {
         get
         {
-            return Physics.Raycast(controlledCharacter.characterTransform.position + Vector3.up, Vector3.down, 1.25f, GroundLayer);
+            return Physics.Raycast(controlledCharacter.CharacterTransform.position + Vector3.up, Vector3.down, 1.25f, GroundLayer);
         }
     }
 
@@ -82,7 +82,7 @@ public class CharacterMovementComponent : CharacterComponent
         if (input.magnitude > 0.05f)
         {
             CurrentSpeed = Mathf.Clamp(CurrentSpeed + Acceleration * Time.deltaTime, 0, CurrentMaxMovementSpeed);
-            var forwardVector = velocity.magnitude > 0.05f ? velocity.normalized : controlledCharacter.characterTransform.forward;
+            var forwardVector = velocity.magnitude > 0.05f ? velocity.normalized : controlledCharacter.CharacterTransform.forward;
             if(controlledCharacter.CharacterMovement.IsAiming) {
                 velocity = Vector3.Lerp(forwardVector, input, RotationSpeed * 5 * Time.deltaTime) * CurrentSpeed;
             } else {
@@ -103,11 +103,11 @@ public class CharacterMovementComponent : CharacterComponent
 
     private void RotateBody()
     {
-        controlledCharacter.characterTransform.rotation = Quaternion.LookRotation(Forward, Vector3.up);
+        controlledCharacter.CharacterTransform.rotation = Quaternion.LookRotation(Forward, Vector3.up);
     }
 
     private void MoveBody()
     {
-        controlledCharacter.characterRigidbody.MovePosition(controlledCharacter.characterTransform.position + velocity * Time.fixedDeltaTime);
+        controlledCharacter.CharacterRigidbody.MovePosition(controlledCharacter.CharacterTransform.position + velocity * Time.fixedDeltaTime);
     }
 }

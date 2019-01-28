@@ -18,7 +18,7 @@ public class CharacterInverseKinematicComponent : CharacterComponent
     public Vector3 AimDirection {
         get
         {
-            Vector3 dir = aimPos - controlledCharacter.characterTransform.position;
+            Vector3 dir = aimPos - controlledCharacter.CharacterTransform.position;
             dir.y = 0;
             return dir.normalized;
         }

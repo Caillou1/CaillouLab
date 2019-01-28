@@ -54,6 +54,7 @@ public class CameraShake : MonoBehaviour
             cameraTransform.localPosition = newPos;
             cameraTransform.localRotation = Quaternion.Euler(newPos * traumaRotationMagnitude);
             Trauma -= Time.deltaTime * traumaDecay * Trauma;
+            if (Trauma < .01f) Trauma = 0;
         } else
         {
             Vector3 newPos = Vector3.Lerp(cameraTransform.localPosition, Vector3.zero, Time.deltaTime);
