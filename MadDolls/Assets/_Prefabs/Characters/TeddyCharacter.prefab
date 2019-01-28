@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &25958661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 25958662}
+  - component: {fileID: 25958663}
+  m_Layer: 12
+  m_Name: PropRootRightHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &25958662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25958661}
+  m_LocalRotation: {x: -0.67984694, y: 0.0030146856, z: 0.2852572, w: -0.67559403}
+  m_LocalPosition: {x: -0.117, y: 0.128, z: -0.031}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3992916402241080147}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 66.47401, y: -79.083, z: 257.392}
+--- !u!114 &25958663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25958661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ce8c6ececc4043119b246f80bb45d82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  puppetMaster: {fileID: 3992916401294455872}
+  connectTo: {fileID: 3992916402271514942}
+  currentProp: {fileID: 0}
 --- !u!1 &3992916400139422792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,7 +1812,6 @@ GameObject:
   - component: {fileID: 3992916400881843381}
   - component: {fileID: 3992916400881843391}
   - component: {fileID: 3992916400881843390}
-  - component: {fileID: 3992916400881843389}
   - component: {fileID: 3992916400881843388}
   - component: {fileID: 3992916400881843387}
   - component: {fileID: 3992916400881843386}
@@ -1775,6 +1820,8 @@ GameObject:
   - component: {fileID: 3992916400881843383}
   - component: {fileID: 3992916400881843382}
   - component: {fileID: 291378079}
+  - component: {fileID: 4732901519101650933}
+  - component: {fileID: 291378069}
   m_Layer: 12
   m_Name: TeddyCharacter
   m_TagString: Untagged
@@ -1835,20 +1882,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &3992916400881843389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3992916400881843380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b47fd96c8e1e354d8fb1c6a6c09a321, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseKeyboardMouse: 1
-  DebugDirections: 0
 --- !u!114 &3992916400881843388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1875,7 +1908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxMovementSpeed: 5
-  MaxAimingMovementSpeed: 3
+  MaxAimingMovementSpeed: 2.5
   Acceleration: 5
   Deceleration: 10
   RotationSpeed: 5
@@ -1897,7 +1930,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PickupRadius: 1
   PickupCheckOriginTransform: {fileID: 3992916400881843381}
-  PropRootRightHand: {fileID: 0}
+  PropRootRightHand: {fileID: 25958663}
 --- !u!114 &3992916400881843385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1911,8 +1944,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnableFootCycleDebug: 0
-  EnableAimDebug: 0
-  ShootAimIK: {fileID: 0}
+  EnableAimDebug: 1
+  ShootAimIK: {fileID: 291378069}
   FootCycleOrigin: {fileID: 3992916400881843381}
   MaxFootCycleRadius: 0.5
   MaxFootCycleRotationSpeed: 50
@@ -1941,12 +1974,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f39695be4da3c7498a6e92321c71347, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterController: {fileID: 3992916400881843389}
+  CharacterController: {fileID: 4732901519101650933}
   CharacterHealth: {fileID: 3992916400881843388}
   CharacterMovement: {fileID: 3992916400881843387}
   CharacterPickup: {fileID: 3992916400881843386}
   CharacterIK: {fileID: 3992916400881843385}
   CharacterAnimation: {fileID: 3992916400881843384}
+  PuppetMasterComponent: {fileID: 3992916401294455872}
 --- !u!136 &3992916400881843382
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2419,6 +2453,78 @@ MonoBehaviour:
     spineStiffness: 0.5
     pullBodyVertical: 0.5
     pullBodyHorizontal: 0
+--- !u!114 &4732901519101650933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3992916400881843380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b304caeaea30c84885545f9b9fb5d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DebugDirections: 1
+  UseKeyboardMouse: 1
+--- !u!114 &291378069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3992916400881843380}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5013856973b27429d937d256dc082f2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fixTransforms: 1
+  solver:
+    IKPosition: {x: 3.6711764, y: 0.7452973, z: -0.5265939}
+    IKPositionWeight: 1
+    root: {fileID: 3992916400881843381}
+    target: {fileID: 0}
+    tolerance: 0
+    maxIterations: 4
+    useRotationLimits: 1
+    XY: 0
+    bones:
+    - transform: {fileID: 3992916400788851372}
+      weight: 1
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: -0.104244, y: -0.000083006824, z: -2.3022756e-10}
+      defaultLocalRotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0, y: 0, z: 0}
+    - transform: {fileID: 3992916402227549124}
+      weight: 1
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: -0.104244, y: -0.000083006766, z: -2.3022778e-10}
+      defaultLocalRotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0, y: 0, z: 0}
+    - transform: {fileID: 3992916401356724496}
+      weight: 1
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: -0.104244, y: -0.000083006766, z: -2.3022778e-10}
+      defaultLocalRotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0, y: 0, z: 0}
+    transform: {fileID: 3992916400139422793}
+    axis: {x: -1, y: 0, z: 0}
+    poleAxis: {x: 0, y: 1, z: 0}
+    polePosition: {x: -0.09392381, y: -1.0473865, z: 0.2546341}
+    poleWeight: 0
+    poleTarget: {fileID: 0}
+    clampWeight: 0.5
+    clampSmoothing: 2
 --- !u!1 &3992916400900268148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4708,6 +4814,7 @@ Transform:
   m_LocalScale: {x: 1.0000001, y: 1, z: 1}
   m_Children:
   - {fileID: 3992916400650905795}
+  - {fileID: 25958662}
   m_Father: {fileID: 3992916400825303329}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4876,6 +4983,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3992916400911152222}
     m_Modifications:
+    - target: {fileID: 167430, guid: bdc15cb97660141638eaeea7afbe7591, type: 3}
+      propertyPath: m_Name
+      value: Puppet (with Fall)
+      objectReference: {fileID: 0}
     - target: {fileID: 444240, guid: bdc15cb97660141638eaeea7afbe7591, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4919,10 +5030,6 @@ PrefabInstance:
     - target: {fileID: 444240, guid: bdc15cb97660141638eaeea7afbe7591, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 167430, guid: bdc15cb97660141638eaeea7afbe7591, type: 3}
-      propertyPath: m_Name
-      value: Puppet (with Fall)
       objectReference: {fileID: 0}
     - target: {fileID: 11466454, guid: bdc15cb97660141638eaeea7afbe7591, type: 3}
       propertyPath: groundLayers.m_Bits
@@ -4947,6 +5054,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3992916400911152222}
     m_Modifications:
+    - target: {fileID: 115442, guid: 1549100322cdb4b80b441323f4142fce, type: 3}
+      propertyPath: m_Name
+      value: Fall
+      objectReference: {fileID: 0}
     - target: {fileID: 464076, guid: 1549100322cdb4b80b441323f4142fce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4990,10 +5101,6 @@ PrefabInstance:
     - target: {fileID: 464076, guid: 1549100322cdb4b80b441323f4142fce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 115442, guid: 1549100322cdb4b80b441323f4142fce, type: 3}
-      propertyPath: m_Name
-      value: Fall
       objectReference: {fileID: 0}
     - target: {fileID: 11446532, guid: 1549100322cdb4b80b441323f4142fce, type: 3}
       propertyPath: raycastLayers.m_Bits

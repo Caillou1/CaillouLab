@@ -9,6 +9,7 @@ public class PlayerControllerComponent : CharacterControllerComponent
 
     private Action getRightStickAction;
     private Camera mainCamera;
+    private Player player;
 
     private void Awake()
     {
@@ -17,6 +18,10 @@ public class PlayerControllerComponent : CharacterControllerComponent
         getRightStickAction = UseKeyboardMouse ? keyboardAction : gamepadAction;
 
         mainCamera = Camera.main;
+    }
+
+    private void Start() {
+        player = ReInput.players.GetPlayer(controlledCharacter.PlayerID);
     }
 
     private void Update()
@@ -28,12 +33,12 @@ public class PlayerControllerComponent : CharacterControllerComponent
     {
         UpdateInputDirections();
 
-        if (Input.GetButtonDown("PickUp"))
+        if (player.GetButtonDown("Y") || Input.GetButtonDown("PickUp"))
         {
             controlledCharacter.CharacterPickup.PickUp();
         }
 
-        if (Input.GetButtonDown("Fire"))
+        if (player.GetButtonDown("RightTrigger") || Input.GetButtonDown("Fire"))
         {
             if (controlledCharacter.CharacterPickup.HasObjectInHands)
             {
@@ -41,7 +46,7 @@ public class PlayerControllerComponent : CharacterControllerComponent
             }
         }
 
-        if (Input.GetButtonUp("Fire"))
+        if (player.GetButtonUp("RightTrigger") || Input.GetButtonUp("Fire"))
         {
             if (controlledCharacter.CharacterPickup.HasObjectInHands)
             {
@@ -49,11 +54,11 @@ public class PlayerControllerComponent : CharacterControllerComponent
             }
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (player.GetButtonDown("LeftTrigger") || Input.GetMouseButtonDown(1))
         {
             controlledCharacter.CharacterIK.EnableAiming();
         }
-        if (Input.GetMouseButtonUp(1))
+        if (player.GetButtonUp("LeftTrigger") || Input.GetMouseButtonUp(1))
         {
             controlledCharacter.CharacterIK.DisableAiming();
         }
@@ -64,7 +69,7 @@ public class PlayerControllerComponent : CharacterControllerComponent
 
     private void SetRightStickFromGamepad()
     {
-        RightStickDirection = new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized;
+        RightStickDirection = new Vector3(player.GetAxis("RightHorizontal"), 0, player.GetAxis("RightVertical")).normalized;
     }
 
     private void SetRightStickFromKeyboard()
@@ -77,7 +82,7 @@ public class PlayerControllerComponent : CharacterControllerComponent
 
     private void UpdateInputDirections()
     {
-        LeftStickDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
+        LeftStickDirection = new Vector3(player.GetAxis("LeftHorizontal"), 0, player.GetAxis("LeftVertical")).normalized;
         getRightStickAction.Invoke();
     }
 }

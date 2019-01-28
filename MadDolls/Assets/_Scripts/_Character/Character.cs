@@ -11,6 +11,9 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterAnimationComponent))]
 public class Character : MonoBehaviour
 {
+    [Header("Player")]
+    public int PlayerID = 0;
+
     [Header("Character Components")]
     public CharacterControllerComponent CharacterController;
     public CharacterHealthComponent CharacterHealth;
