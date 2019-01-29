@@ -30,7 +30,7 @@ public class AssaultRifleBulletObject : APoolObject
         var health = collision.transform.GetComponent<CharacterHealthComponent>();
         if(health != null)
         {
-            health.ApplyDamage(100);
+            health.ApplyDamage(10);
         }
         ReturnImmediate();
     }

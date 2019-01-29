@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 public enum ExplosionSize
 {
@@ -15,6 +17,7 @@ public class ExplodableObject : MonoBehaviour, IExplodable
     public LayerMask ExplodableLayerMask;
     public LayerMask PlayerLayerMask;
     public ExplosionSize SizeOfExplosion;
+    public UnityEvent OnExplode;
 
     private bool hasExploded = false;
 
@@ -73,7 +76,8 @@ public class ExplodableObject : MonoBehaviour, IExplodable
                 }
             }
 
-            Destroy(gameObject);
+            if (OnExplode != null)
+                OnExplode.Invoke();
         }
     }
 
@@ -88,5 +92,10 @@ public class ExplodableObject : MonoBehaviour, IExplodable
         {
             Explode();
         }
+    }
+
+    public void Reset()
+    {
+        hasExploded = false;
     }
 }

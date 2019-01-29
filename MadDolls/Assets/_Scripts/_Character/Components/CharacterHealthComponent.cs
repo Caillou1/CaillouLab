@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class CharacterHealthComponent : CharacterComponent
 {
     public int MaxHealth;
+    public GameObject HealthBarObject;
     public Slider HealthBarGreenSlider;
     public Slider HealthBarRedSlider;
     public int CurrentHealth { get; private set; }
@@ -33,21 +34,20 @@ public class CharacterHealthComponent : CharacterComponent
 
     public void ApplyDamage(int amount, Vector3 dir)
     {
-        if (controlledCharacter.CharacterController is AIControllerComponent)
+        ApplyDamage(amount);
+        controlledCharacter.PuppetMasterComponent.pinWeight = 0;
+        KU.StartTimer(() => controlledCharacter.PuppetMasterComponent.pinWeight = 1, 1);
+        foreach (var rb in controlledCharacter.PuppetMasterComponent.transform.GetChild(0).GetComponentsInChildren<Rigidbody>())
         {
-            ApplyDamage(amount);
-            controlledCharacter.PuppetMasterComponent.pinWeight = 0;
-            KU.StartTimer(() => controlledCharacter.PuppetMasterComponent.pinWeight = 1, 1);
-            foreach (var rb in controlledCharacter.PuppetMasterComponent.transform.GetChild(0).GetComponentsInChildren<Rigidbody>())
-            {
-                rb.AddForce(dir * amount, ForceMode.Impulse);
-            }
+            rb.AddForce(dir * amount, ForceMode.Impulse);
         }
     }
 
     public void Kill()
     {
         controlledCharacter.PuppetMasterComponent.state = RootMotion.Dynamics.PuppetMaster.State.Dead;
+        CameraFollow.Instance.UnregisterTarget(controlledCharacter.CharacterTransform);
+        HealthBarObject.SetActive(false);
     }
 
     private void Update()

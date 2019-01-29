@@ -23,6 +23,11 @@ public class Character : MonoBehaviour
         InitializeComponents();
     }
 
+    private void Start()
+    {
+        CameraFollow.Instance.RegisterTarget(CharacterTransform);
+    }
+
     private void InitializeCharacter(int playerID)
     {
         PlayerID = playerID;

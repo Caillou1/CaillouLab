@@ -4,16 +4,15 @@ using UnityEngine.SceneManagement;
 
 public class AIControllerComponent : CharacterControllerComponent
 {
-    public Transform Player;
-    
-    private bool canMove = false;
+    private Vector3 newDirection;
+
+    private void Start()
+    {
+        KU.StartTimer(() => newDirection = new Vector3(UnityEngine.Random.Range(-1f,1f), 0, UnityEngine.Random.Range(-1f, 1f)), 5, true);
+    }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) canMove = true;
-        if (canMove)
-        {
-            LeftStickDirection = -Vector3.forward;
-        }
+        LeftStickDirection = newDirection.normalized;
     }
 }
