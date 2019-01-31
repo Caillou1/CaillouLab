@@ -1,6 +1,12 @@
-![Ll]ibrary/
-[Ll]ibrary/*
-![Ll]ibrary/PackageCache/
+!MadDolls/
+MadDolls/*
+!MadDolls/Library/
+MadDolls/Library/*
+!MadDolls/Library/PackageCache/
+
+Lab/Library/
+
+
 
 [Tt]emp/
 [Oo]bj/
