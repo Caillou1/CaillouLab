@@ -1,4 +1,5 @@
 ﻿using RootMotion.FinalIK;
+using System.Linq;
 using UnityEngine;
 
 public class CharacterInverseKinematicComponent : CharacterComponent
@@ -9,11 +10,9 @@ public class CharacterInverseKinematicComponent : CharacterComponent
 
     [Header("Aim System")]
     public AimIK ShootAimIK;
-
-    [Header("Foot Cycle System")]
-    public Transform FootCycleOrigin;
-    public float MaxFootCycleRadius = .5f;
-    public float MaxFootCycleRotationSpeed = 50f;
+    public float AimAssist = .03f;
+    public float AimSpeed = 3f;
+    public float AimAssistSpeed = 5f;
 
     public Vector3 AimDirection {
         get
@@ -24,10 +23,32 @@ public class CharacterInverseKinematicComponent : CharacterComponent
         }
     }
 
+    public Vector3 RealAimDirection
+    {
+        get
+        {
+            Vector3 dir = realAimPos - controlledCharacter.CharacterTransform.position;
+            dir.y = 0;
+            return dir.normalized;
+        }
+    }
+
     private Vector3 aimPos;
-    private Vector2 footCycleOrigin;
-    private float footCycleRadius;
-    private float footCycleRotation;
+    private Vector3 realAimPos;
+    private Vector3 newAimPos
+    {
+        get
+        {
+            if (controlledCharacter.CharacterController.RightStickDirection.magnitude > .01f)
+            {
+                return ShootAimIK.solver.transform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
+            }
+            else
+            {
+                return ShootAimIK.solver.transform.position + controlledCharacter.CharacterMovement.Forward * 5f;
+            }
+        }
+    }
     
     public bool IsAimingEnabled
     {
@@ -39,30 +60,64 @@ public class CharacterInverseKinematicComponent : CharacterComponent
     {
         if(IsAimingEnabled)
         {
-            Vector3 newPos;
-            //ShootAimIK.solver.polePosition = controlledCharacter.characterTransform.position + new Vector3(0, 10, 0);
+            ComputeAiming();
+        }
+    }
 
-            if (controlledCharacter.CharacterController.RightStickDirection.magnitude > .01f)
+    private void ComputeAiming()
+    {
+        aimPos = Vector3.Slerp(aimPos, newAimPos, Time.deltaTime * AimSpeed);
+
+        var aimedCharacter = FindAimedCharacter();
+        if (aimedCharacter != null) {
+            realAimPos = Vector3.Lerp(realAimPos, aimedCharacter.CharacterTransform.position, Time.deltaTime * AimAssistSpeed);
+        } else
+        {
+            realAimPos = Vector3.Lerp(realAimPos, aimPos, Time.deltaTime * AimSpeed);
+        }
+
+        ShootAimIK.solver.IKPosition = realAimPos;
+
+        if (EnableAimDebug)
+        {
+            KU.DebugSphere(newAimPos, .5f, Color.red, Time.deltaTime);
+            KU.DebugSphere(aimPos, .33f, Color.yellow, Time.deltaTime);
+            KU.DebugSphere(realAimPos, .25f, Color.green, Time.deltaTime);
+        }
+    }
+
+    private Character FindAimedCharacter()
+    {
+        var opponents = GameManager.Instance.GetOpponents(controlledCharacter);
+        Character target = null;
+
+        if (opponents.Count > 0)
+        {
+            var bestTarget = opponents.OrderByDescending(c =>
             {
-                newPos = ShootAimIK.solver.transform.position + controlledCharacter.CharacterController.RightStickDirection * 5f;
-            } else
+                var dir = c.CharacterTransform.position - controlledCharacter.CharacterTransform.position;
+                dir.y = 0;
+                dir.Normalize();
+
+                return Vector3.Dot(dir, AimDirection);
+            }).ElementAt(0);
+
+            var bestDir = bestTarget.CharacterTransform.position - controlledCharacter.CharacterTransform.position;
+            bestDir.y = 0;
+            bestDir.Normalize();
+
+            if (Vector3.Dot(bestDir, AimDirection) >= (1 - AimAssist))
             {
-                newPos = ShootAimIK.solver.transform.position + controlledCharacter.CharacterMovement.Forward * 5f;
-            }
-            aimPos = Vector3.Slerp(ShootAimIK.solver.IKPosition, newPos, Time.deltaTime * 3f);
-            ShootAimIK.solver.IKPosition = aimPos;
-            
-            if(EnableAimDebug)
-            {
-                KU.DebugSphere(newPos, .5f, Color.green, Time.deltaTime);
-                KU.DebugSphere(ShootAimIK.solver.IKPosition, .25f, Color.red, Time.deltaTime);
+                target = bestTarget;
             }
         }
+
+        return target;
     }
 
     public void EnableAiming()
     {
-        ShootAimIK.solver.IKPosition = ShootAimIK.solver.transform.position + controlledCharacter.CharacterMovement.Forward * 5f;;
+        aimPos = ShootAimIK.solver.transform.position + controlledCharacter.CharacterMovement.Forward * 5f;
         ShootAimIK.enabled = true;
         IsAimingEnabled = true;
     }

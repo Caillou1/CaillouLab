@@ -10,6 +10,14 @@ public class CharacterHealthComponent : CharacterComponent
     public int CurrentHealth { get; private set; }
     public float TimeBeforeDecrementRedSlider = 1f;
 
+    public bool IsAlive
+    {
+        get
+        {
+            return CurrentHealth > 0;
+        }
+    }
+
     private float LastHealthLostTime;
 
     private void Start()

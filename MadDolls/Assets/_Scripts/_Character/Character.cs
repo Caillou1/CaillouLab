@@ -25,7 +25,7 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-        CameraFollow.Instance.RegisterTarget(CharacterTransform);
+        GameManager.Instance.RegisterCharacter(this);
     }
 
     private void InitializeCharacter(int playerID)

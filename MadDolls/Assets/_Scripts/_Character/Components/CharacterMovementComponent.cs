@@ -26,7 +26,7 @@ public class CharacterMovementComponent : CharacterComponent
         get
         {
             if(controlledCharacter.CharacterMovement.IsAiming) {
-                return controlledCharacter.CharacterIK.AimDirection;
+                return controlledCharacter.CharacterIK.RealAimDirection;
             } else {
                 return (velocity.magnitude > .01f) ? velocity.normalized : controlledCharacter.CharacterTransform.forward;
             }
