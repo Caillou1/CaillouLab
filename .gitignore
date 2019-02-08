@@ -1,13 +1,4 @@
-!MadDolls/
-MadDolls/*
-!MadDolls/Library/
-MadDolls/Library/*
-!MadDolls/Library/PackageCache/
-
-Lab/Library/
-
-
-
+[Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
