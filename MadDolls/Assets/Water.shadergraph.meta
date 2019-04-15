@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: 8574ef1b35b23ba4cbee244fb79a9489
+=======
+guid: da346af494db8394bba2a224a09fcad4
+>>>>>>> Stashed changes
 ScriptedImporter:
   fileIDToRecycleName:
     4800000: MainAsset
