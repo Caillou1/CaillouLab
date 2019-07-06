@@ -84,6 +84,7 @@ public class CharacterInverseKinematicComponent : CharacterComponent
             KU.DebugSphere(aimPos, .33f, Color.yellow, Time.deltaTime);
             KU.DebugSphere(realAimPos, .25f, Color.green, Time.deltaTime);
         }
+        
     }
 
     private Character FindAimedCharacter()
