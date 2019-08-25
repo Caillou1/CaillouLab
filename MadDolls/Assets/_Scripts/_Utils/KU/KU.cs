@@ -15,11 +15,14 @@ public class KU : MonoBehaviour
     private static Transform KUTransform;
     private static Canvas KUCanvas;
     private static Transform logPanelTransform;
+    private static Transform permanentLogTransform;
+    private static Transform punctualLogTransform;
     private static RectTransform logPanelRectTransform;
     private static Image logPanelImage;
     private static GameObject logPanelObject;
     private static int LogNumber = 0;
     private static Color defaultColor = Color.white;
+    private static Dictionary<string, Text> permanentLogs = new Dictionary<string, Text>();
 
     private void Awake()
     {
@@ -40,6 +43,8 @@ public class KU : MonoBehaviour
         KUTransform = transform; 
         KUCanvas = KUTransform.GetComponentInChildren<Canvas>();
         logPanelTransform = KUCanvas.transform.Find("LogPanel");
+        permanentLogTransform = KUCanvas.transform.KUFindDeep("PermanentLogs");
+        punctualLogTransform = KUCanvas.transform.KUFindDeep("PunctualLogs");
         logPanelRectTransform = logPanelTransform.GetComponent<RectTransform>();
         logPanelImage = logPanelTransform.GetComponent<Image>();
         logPanelObject = logPanelTransform.gameObject;
@@ -74,12 +79,33 @@ public class KU : MonoBehaviour
         }
     }
 
+    public static void LogPermanent(string logKey, object message, Color? color = null, bool logToConsole = true, Object context = null) {
+        if(logToConsole) {
+            Debug.Log(message, context);
+        }
+
+        if(!permanentLogs.ContainsKey(logKey)) {
+            permanentLogs.Add(logKey, Instantiate(Sys.DefaultLogText, permanentLogTransform));
+        }
+
+        permanentLogs[logKey].text = logKey + " : " + message.ToString();
+        permanentLogs[logKey].color = color ?? defaultColor;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(logPanelRectTransform);
+    }
+
+    public static void UnlogPermanent(string logKey) {
+        if(permanentLogs.ContainsKey(logKey)) {
+            Destroy(permanentLogs[logKey].gameObject);
+            permanentLogs.Remove(logKey);
+        }
+    }
+
     private static void LogToScreen(LogInfo log)
     {
         LogNumber++;
         if (Sys.UseLogPanel && !logPanelImage.enabled)
             logPanelImage.enabled = true;
-        var text = Instantiate(Sys.DefaultLogText, logPanelTransform);
+        var text = Instantiate(Sys.DefaultLogText, punctualLogTransform);
         text.transform.SetAsFirstSibling();
         text.text = log.Message.ToString();
         text.color = log.LogColor;

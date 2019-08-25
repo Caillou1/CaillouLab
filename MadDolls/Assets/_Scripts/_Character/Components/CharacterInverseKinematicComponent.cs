@@ -70,7 +70,9 @@ public class CharacterInverseKinematicComponent : CharacterComponent
 
         var aimedCharacter = FindAimedCharacter();
         if (aimedCharacter != null) {
-            realAimPos = Vector3.Lerp(realAimPos, aimedCharacter.CharacterTransform.position, Time.deltaTime * AimAssistSpeed);
+            Vector3 aimedCharacterPos = aimedCharacter.CharacterTransform.position;
+            aimedCharacterPos.y = aimPos.y;
+            realAimPos = Vector3.Lerp(realAimPos, aimedCharacterPos, Time.deltaTime * AimAssistSpeed);
         } else
         {
             realAimPos = Vector3.Lerp(realAimPos, aimPos, Time.deltaTime * AimSpeed);

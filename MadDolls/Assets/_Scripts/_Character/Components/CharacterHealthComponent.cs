@@ -9,6 +9,7 @@ public class CharacterHealthComponent : CharacterComponent
     public Slider HealthBarRedSlider;
     public int CurrentHealth { get; private set; }
     public float TimeBeforeDecrementRedSlider = 1f;
+    public Collider DamageCollider;
 
     public bool IsAlive
     {
@@ -56,6 +57,7 @@ public class CharacterHealthComponent : CharacterComponent
         controlledCharacter.PuppetMasterComponent.state = RootMotion.Dynamics.PuppetMaster.State.Dead;
         CameraFollow.Instance.UnregisterTarget(controlledCharacter.CharacterTransform);
         HealthBarObject.SetActive(false);
+        DamageCollider.enabled = false;
     }
 
     private void Update()

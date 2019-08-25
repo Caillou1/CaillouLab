@@ -16,7 +16,7 @@ public class FracturedObject : MonoBehaviour, IExplodable
 
     public void Break(Vector3 force)
     {
-        Debug.Log(force.magnitude);
+        //Debug.Log(force.magnitude);
         if (force.magnitude >= MinimumForceToBreak)
         {
             NormalObjectRenderer.enabled = false;

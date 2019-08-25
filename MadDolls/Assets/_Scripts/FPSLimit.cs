@@ -17,6 +17,6 @@ public class FPSLimit : MonoBehaviour
 
     private void LogFPS(float duration) {
         float fps = 1.0f/Time.deltaTime;
-        KU.Log(fps, duration, Color.red, true, false);
+        KU.LogPermanent("Framerate", fps, Color.red, false);
     }
 }

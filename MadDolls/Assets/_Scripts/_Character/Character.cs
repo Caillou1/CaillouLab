@@ -5,6 +5,7 @@ public class Character : MonoBehaviour
 {
     [Header("Player")]
     public int PlayerID = 0;
+    public bool RegisterToCamera = true;
 
     [Header("Character Components")]
     public CharacterControllerComponent CharacterController;
@@ -25,7 +26,8 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.RegisterCharacter(this);
+        if(RegisterToCamera)
+            GameManager.Instance.RegisterCharacter(this);
     }
 
     private void InitializeCharacter(int playerID)

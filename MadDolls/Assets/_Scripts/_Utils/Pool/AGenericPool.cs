@@ -8,11 +8,18 @@ public abstract class AGenericPool<T> : MonoBehaviour where T : APoolObject
     public static AGenericPool<T> Instance { get; private set; }
     private Queue<T> objects = new Queue<T>();
     private Transform tf;
+    public int Count { private set; get; }
 
     private void Awake()
     {
         Instance = this;
         tf = transform;
+        Count = 0;
+        KU.StartTimer(DebugPoolCount, .1f, true);
+    }
+
+    public void DebugPoolCount() {
+        KU.LogPermanent(tf.name, objects.Count + "/" + Count, Color.white, false);
     }
 
     public T Get()
@@ -20,18 +27,14 @@ public abstract class AGenericPool<T> : MonoBehaviour where T : APoolObject
         if(objects.Count == 0)
         {
             AddObjects(1);
+            Count++;
         }
         return objects.Dequeue();
     }
 
     public T Get(Vector3 startPosition, bool activate = false)
     {
-        if(objects.Count == 0)
-        {
-            AddObjects(1);
-        }
-
-        var obj = objects.Dequeue();
+        var obj = Get();
 
         obj.SetPosition(startPosition);
 
@@ -43,12 +46,7 @@ public abstract class AGenericPool<T> : MonoBehaviour where T : APoolObject
 
     public T Get(Vector3 startPosition, Quaternion startRotation, bool activate = false)
     {
-        if (objects.Count == 0)
-        {
-            AddObjects(1);
-        }
-
-        var obj = objects.Dequeue();
+        var obj = Get();
 
         obj.SetPosition(startPosition);
         obj.SetRotation(startRotation);

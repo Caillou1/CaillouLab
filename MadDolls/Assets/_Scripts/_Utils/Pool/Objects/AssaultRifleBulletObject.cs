@@ -23,6 +23,7 @@ public class AssaultRifleBulletObject : APoolObject
     {
         base.Activate();
         BulletRigidbody.velocity = BulletRigidbody.rotation * BulletDirection * BulletSpeed;
+        //Debug.DrawRay(BulletRigidbody.position, BulletRigidbody.velocity.normalized * 999f, Color.red, 999f);
     }
 
     private void OnCollisionEnter(Collision collision)
