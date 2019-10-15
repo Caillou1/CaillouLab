@@ -3,9 +3,8 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -33,6 +32,7 @@ MonoBehaviour:
   muscleDamper: 0
   pinPow: 4
   pinDistanceFalloff: 5
+  angularPinning: 0
   updateJointAnchors: 1
   supportTranslationAnimation: 0
   angularLimits: 0
@@ -47,6 +47,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: Spine
     bone: 7
     props:
@@ -56,6 +61,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: Chest
     bone: 8
     props:
@@ -65,6 +75,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: Head
     bone: 10
     props:
@@ -74,6 +89,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: LeftUpperLeg
     bone: 1
     props:
@@ -83,6 +103,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: LeftLowerLeg
     bone: 3
     props:
@@ -92,6 +117,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: LeftFoot
     bone: 5
     props:
@@ -101,6 +131,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: RightUpperLeg
     bone: 2
     props:
@@ -110,6 +145,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: RightLowerLeg
     bone: 4
     props:
@@ -119,6 +159,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: RightFoot
     bone: 6
     props:
@@ -128,6 +173,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 1
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: LeftUpperArm
     bone: 13
     props:
@@ -137,6 +187,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: LeftLowerArm
     bone: 15
     props:
@@ -146,6 +201,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: LeftHand
     bone: 17
     props:
@@ -155,6 +215,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: RightUpperArm
     bone: 14
     props:
@@ -164,6 +229,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: RightLowerArm
     bone: 16
     props:
@@ -173,6 +243,11 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []
   - name: RightHand
     bone: 18
     props:
@@ -182,3 +257,8 @@ MonoBehaviour:
       muscleWeight: 1
       muscleDamper: 1
       mapPosition: 0
+      internalCollisionIgnores:
+        ignoreAll: 0
+        muscles: []
+        groups: 
+      animatedTargetChildren: []

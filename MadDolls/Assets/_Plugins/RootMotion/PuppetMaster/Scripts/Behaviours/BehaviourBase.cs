@@ -43,6 +43,8 @@ namespace RootMotion.Dynamics
         public virtual void KillStart() { }
         public virtual void KillEnd() { }
         public virtual void OnTeleport(Quaternion deltaRotation, Vector3 deltaPosition, Vector3 pivot, bool moveToTarget) { }
+        public virtual void OnMuscleDisconnected(Muscle m) { }
+        public virtual void OnMuscleReconnected(Muscle m) { }
 
         public virtual void OnMuscleAdded(Muscle m)
         {
@@ -68,7 +70,7 @@ namespace RootMotion.Dynamics
         protected virtual void OnMuscleHitBehaviour(MuscleHit hit) { }
         protected virtual void OnMuscleCollisionBehaviour(MuscleCollision collision) { }
         protected virtual void OnMuscleCollisionExitBehaviour(MuscleCollision collision) { }
-
+        
         public BehaviourDelegate OnPostActivate;
         public BehaviourDelegate OnPostInitiate;
         public BehaviourDelegate OnPostFixedUpdate;
@@ -392,13 +394,13 @@ namespace RootMotion.Dynamics
                 puppetMaster.muscles[0].transform.position.z);
         }
 
-        protected void RemoveMusclesOfGroup(Muscle.Group group)
+        protected void RemovePropMuscles()
         {
-            while (MusclesContainsGroup(group))
+            while (ContainsRemovablePropMuscle())
             {
                 for (int i = 0; i < puppetMaster.muscles.Length; i++)
                 {
-                    if (puppetMaster.muscles[i].props.group == group)
+                    if (puppetMaster.muscles[i].props.group == Muscle.Group.Prop && !puppetMaster.muscles[i].isPropMuscle)
                     {
                         puppetMaster.RemoveMuscleRecursive(puppetMaster.muscles[i].joint, true);
                         break;
@@ -424,11 +426,11 @@ namespace RootMotion.Dynamics
             }
         }
 
-        protected bool MusclesContainsGroup(Muscle.Group group)
+        protected bool ContainsRemovablePropMuscle()
         {
             foreach (Muscle m in puppetMaster.muscles)
             {
-                if (m.props.group == group) return true;
+                if (m.props.group == Muscle.Group.Prop && !m.isPropMuscle) return true;
             }
             return false;
         }

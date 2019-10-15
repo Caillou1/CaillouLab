@@ -174,6 +174,12 @@ namespace RootMotion.Dynamics
         /// </summary>
         [Range(0f, 100f)] public float pinDistanceFalloff = 5;
 
+        [Tooltip("If disabled, only world space AddForce will be used to pin the ragdoll to the animation while 'Pin Weight' > 0. If enabled, AddTorque will also be used for rotational pinning. Keep it disabled if you don't see any noticeable improvement from it to avoid wasting CPU resources.")]
+        /// <summary>
+        /// If disabled, only world space AddForce will be used to pin the ragdoll to the animation while 'Pin Weight' > 0. If enabled, AddTorque will also be used for rotational pinning. Keep it disabled if you don't see any noticeable improvement from it to avoid wasting CPU resources.
+        /// </summary>
+        public bool angularPinning;
+
         [Tooltip("When the target has animated bones between the muscle bones, the joint anchors need to be updated in every update cycle because the muscles' targets move relative to each other in position space. This gives much more accurate results, but is computationally expensive so consider leaving it off.")]
         /// <summary>
         /// When the target has animated bones between the muscle bones, the joint anchors need to be updated in every update cycle because the muscles' targets move relative to each other in position space. This gives much more accurate results, but is computationally expensive so consider leaving it off.
@@ -205,6 +211,11 @@ namespace RootMotion.Dynamics
         /// The Muscles managed by this PuppetMaster.
         /// </summary>
         public Muscle[] muscles = new Muscle[0];
+
+        /// <summary>
+        /// All PropMuscles added to this PuppetMaster.
+        /// </summary>
+        [SerializeField] [HideInInspector] public PropMuscle[] propMuscles = new PropMuscle[0];
 
         public delegate void UpdateDelegate();
         public delegate void MuscleDelegate(Muscle muscle);
@@ -243,6 +254,16 @@ namespace RootMotion.Dynamics
         /// Called when a muscle has been removed.
         /// </summary>
         public MuscleDelegate OnMuscleRemoved;
+
+        /// <summary>
+        /// Called when a muscle has been disconnected.
+        /// </summary>
+        public MuscleDelegate OnMuscleDisconnected;
+
+        /// <summary>
+        /// Called when muscles have been reconnected.
+        /// </summary>
+        public MuscleDelegate OnMuscleReconnected;
 
         /// <summary>
         /// Gets the Animator on the target.
@@ -288,6 +309,20 @@ namespace RootMotion.Dynamics
         /// The list of solvers that will be updated by this PuppetMaster. When you add a Final-IK component in runtime after PuppetMaster has initiated, add it to this list using solver.Add(SolverManager solverManager).
         /// </summary>
         [HideInInspector] public List<SolverManager> solvers = new List<SolverManager>();
+
+        /// <summary>
+        /// If true, PuppetMaster will not handle internal collision ignores and you can have full control over handling it (call SetInternalCollisionsManual();).
+        /// </summary>
+        [HideInInspector] [NonSerialized] public bool manualInternalCollisionControl;
+        /// <summary>
+        /// If true, PuppetMaster will not handle angular limits and you can have full control over handling it (call SetAngularLimitsManual();).
+        /// </summary>
+        [HideInInspector] [NonSerialized] public bool manualAngularLimitControl;
+
+        /// <summary>
+        /// If disabled, disconnected bones will not be mapped to disconnected ragdoll parts.
+        /// </summary>
+        [SerializeField] [HideInInspector] public bool mapDisconnectedMuscles = true;
 
         /// <summary>
         /// Normal means Animator is in Normal or Unscaled Time or Animation has Animate Physics unchecked.
@@ -345,7 +380,46 @@ namespace RootMotion.Dynamics
             teleportPosition = position;
             teleportRotation = rotation;
             teleportMoveToTarget = moveToTarget;
+
+            // If disabled, teleport immedietely.
+            if (activeMode == Mode.Disabled) Read();
         }
+
+        /// <summary>
+        /// Used for manual override of internal collision ignores.
+        /// </summary>
+        public void SetInternalCollisionsManual(bool collide, bool useInternalCollisionIgnores)
+        {
+            for (int i = 0; i < muscles.Length; i++)
+            {
+                for (int i2 = i; i2 < muscles.Length; i2++)
+                {
+                    if (i != i2)
+                    {
+                        if (collide)
+                        {
+                            muscles[i].ResetInternalCollisions(muscles[i2], useInternalCollisionIgnores);
+                        }
+                        else
+                        {
+                            muscles[i].IgnoreInternalCollisions(muscles[i2]);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Used for manual override of angular limit ignores.
+        /// </summary>
+        public void SetAngularLimitsManual(bool limited)
+        {
+            for (int i = 0; i < muscles.Length; i++)
+            {
+                if (!muscles[i].state.isDisconnected) muscles[i].IgnoreAngularLimits(!limited);
+            }
+        }
+
 
         #region Update Sequence
 
@@ -366,6 +440,10 @@ namespace RootMotion.Dynamics
         private bool teleportMoveToTarget;
         private bool rebuildFlag;
         private bool onPostRebuildFlag;
+        private bool[] disconnectMuscleFlags = new bool[0];
+        private MuscleDisconnectMode[] muscleDisconnectModes = new MuscleDisconnectMode[0];
+        private bool[] disconnectDeactivateFlags = new bool[0];
+        private bool[] reconnectMuscleFlags = new bool[0];
 
         private bool autoSimulate
         {
@@ -373,8 +451,9 @@ namespace RootMotion.Dynamics
             {
 #if UNITY_2018_3_OR_NEWER
             return Physics.autoSimulation;
-#endif
+#else
                 return true;
+#endif
             }
         }
 
@@ -407,7 +486,7 @@ namespace RootMotion.Dynamics
 
                 // Animation
                 SetAnimationEnabled(state == State.Alive);
-                if (state == State.Alive && targetAnimator != null)
+                if (state == State.Alive && targetAnimator != null && targetAnimator.gameObject.activeInHierarchy)
                 {
                     targetAnimator.Update(0.001f);
                 }
@@ -486,7 +565,7 @@ namespace RootMotion.Dynamics
             if (!initiated) awakeFailed = true;
         }
 
-        void Start()
+        public void Start()
         {
             /*
 #if UNITY_EDITOR
@@ -566,7 +645,12 @@ namespace RootMotion.Dynamics
 
             UpdateHierarchies();
 
+            foreach (PropMuscle propMuscle in propMuscles) propMuscle.OnInitiate();
+
             hierarchyIsFlat = HierarchyIsFlat();
+
+            FlagInternalCollisionsForUpdate();
+            FlagAngularLimitsForUpdate();
 
             initiated = true;
 
@@ -689,6 +773,9 @@ namespace RootMotion.Dynamics
                 }
             }
 
+            FlagInternalCollisionsForUpdate();
+            FlagAngularLimitsForUpdate();
+
             foreach (BehaviourBase b in behaviours)
             {
                 b.OnReactivate();
@@ -711,12 +798,19 @@ namespace RootMotion.Dynamics
 
             if (!initiated) return;
             if (rebuildFlag) OnRebuild();
+            foreach (PropMuscle propMuscle in propMuscles) propMuscle.OnUpdate();
+            ProcessDisconnects();
+            ProcessReconnects();
 
             if (muscles.Length <= 0) return;
 
             interpolated = IsInterpolated();
 
-            if (!isActive) return;
+            if (!isActive)
+            {
+                if (teleport) Read();
+                return;
+            }
 
             pinWeight = Mathf.Clamp(pinWeight, 0f, 1f);
             muscleWeight = Mathf.Clamp(muscleWeight, 0f, 1f);
@@ -735,15 +829,18 @@ namespace RootMotion.Dynamics
                 if (solver != null) solver.UpdateSolverExternal();
             }
 
+            if (OnRead != null) OnRead(); // Update IK
+            foreach (BehaviourBase behaviour in behaviours) behaviour.OnRead();
+
             Read();
 
             if (!isFrozen)
             {
                 // Update internal collision ignoring
-                SetInternalCollisions(internalCollisions);
+                UpdateInternalCollisions();
 
                 // Update angular limit ignoring
-                SetAngularLimits(angularLimits);
+                UpdateAngularLimits();
 
                 // Update anchors
                 /*
@@ -768,7 +865,7 @@ namespace RootMotion.Dynamics
                 // Update Muscles
                 for (int i = 0; i < muscles.Length; i++)
                 {
-                    muscles[i].Update(pinWeight, muscleWeight, muscleSpring, muscleDamper, pinPow, pinDistanceFalloff, true, deltaTime);
+                    muscles[i].Update(pinWeight, muscleWeight, muscleSpring, muscleDamper, pinPow, pinDistanceFalloff, true, angularPinning, deltaTime);
                 }
             }
 
@@ -820,6 +917,11 @@ namespace RootMotion.Dynamics
                     foreach (Muscle m in muscles) m.CalculateMappedVelocity();
                 }
 
+                if (mapDisconnectedMuscles)
+                {
+                    for (int i = 0; i < muscles.Length; i++) muscles[i].MapDisconnected();
+                }
+
                 // Freezing
                 if (freezeFlag) OnFreezeFlag();
             }
@@ -849,13 +951,23 @@ namespace RootMotion.Dynamics
             if (!autoSimulate) return;
 
             if (rebuildFlag) OnRebuild();
+            foreach (PropMuscle propMuscle in propMuscles) propMuscle.OnUpdate();
+            ProcessDisconnects();
+            ProcessReconnects();
 
             if (muscles.Length <= 0) return;
 
             interpolated = IsInterpolated();
 
             fixedFrame = true;
-            if (!isActive) return;
+            if (!isActive)
+            {
+                if (teleport)
+                {
+                    Read();
+                }
+                return;
+            }
 
             pinWeight = Mathf.Clamp(pinWeight, 0f, 1f);
             muscleWeight = Mathf.Clamp(muscleWeight, 0f, 1f);
@@ -886,16 +998,19 @@ namespace RootMotion.Dynamics
                     if (solver != null) solver.UpdateSolverExternal();
                 }
 
+                if (OnRead != null) OnRead();
+                foreach (BehaviourBase behaviour in behaviours) behaviour.OnRead();
                 Read();
+                readInFixedUpdate = true;
             }
 
             if (!isFrozen)
             {
                 // Update internal collision ignoring
-                SetInternalCollisions(internalCollisions);
+                UpdateInternalCollisions();
 
                 // Update angular limit ignoring
-                SetAngularLimits(angularLimits);
+                UpdateAngularLimits();
 
                 // Update anchors
                 /*
@@ -921,7 +1036,7 @@ namespace RootMotion.Dynamics
                 // Update Muscles
                 for (int i = 0; i < muscles.Length; i++)
                 {
-                    muscles[i].Update(pinWeight, muscleWeight, muscleSpring, muscleDamper, pinPow, pinDistanceFalloff, true, Time.fixedDeltaTime);
+                    muscles[i].Update(pinWeight, muscleWeight, muscleSpring, muscleDamper, pinPow, pinDistanceFalloff, true, angularPinning, Time.fixedDeltaTime);
                 }
             }
 
@@ -975,6 +1090,89 @@ namespace RootMotion.Dynamics
             if (OnPostLateUpdate != null) OnPostLateUpdate();
         }
 
+        private bool readInFixedUpdate;
+
+        protected virtual void OnLateUpdate()
+        {
+            if (!initiated) return;
+
+            if (animatorDisabled)
+            {
+                targetAnimator.enabled = true;
+                animatorDisabled = false;
+            }
+
+            bool animationApplied = updateMode == UpdateMode.Normal || (!readInFixedUpdate && fixedFrame);
+            readInFixedUpdate = false;
+            bool muscleRead = animationApplied && isActive; // If disabled, reading will be done in PuppetMasterModes.cs
+
+            if (animationApplied)
+            {
+                if (OnRead != null) OnRead(); // Update IK
+                foreach (BehaviourBase behaviour in behaviours) behaviour.OnRead();
+            }
+            if (muscleRead) Read();
+            
+            // Switching states
+            SwitchStates();
+
+            // Switching modes
+            SwitchModes();
+
+            switch (updateMode)
+            {
+                case UpdateMode.FixedUpdate:
+                    if (!fixedFrame && !interpolated) return;
+                    break;
+                case UpdateMode.AnimatePhysics:
+                    if (!fixedFrame && !interpolated) return;
+                    break;
+            }
+
+            // Below is common code for all update modes! For AnimatePhysics modes the following code will run only in fixed frames
+            fixedFrame = false;
+
+            // Mapping
+            if (!isFrozen)
+            {
+                mappingWeight = Mathf.Clamp(mappingWeight, 0f, 1f);
+                float mW = mappingWeight * mappingBlend;
+
+                if (mW > 0f)
+                {
+                    if (isActive)
+                    {
+                        //Debug.DrawLine(muscles[0].transform.position, Vector3.zero, Color.blue, 1f);
+                        //if (muscles[0].transform.position.y > 2.5f) Debug.Break();
+
+                        for (int i = 0; i < muscles.Length; i++) muscles[i].Map(mW);
+                    }
+                }
+                else
+                {
+                    // Moving to Target when in Kinematic mode
+                    if (activeMode == Mode.Kinematic) MoveToTarget();
+                }
+
+                foreach (BehaviourBase behaviour in behaviours) behaviour.OnWrite();
+                if (OnWrite != null) OnWrite();
+
+                StoreTargetMappedState(); //@todo no need to do this all the time
+
+                foreach (Muscle m in muscles) m.CalculateMappedVelocity();
+            }
+            
+            if (mapDisconnectedMuscles)
+            {
+                for (int i = 0; i < muscles.Length; i++) muscles[i].MapDisconnected();
+            }
+            
+
+            // Freezing
+            if (freezeFlag) OnFreezeFlag();
+        }
+
+        /*
         protected virtual void OnLateUpdate()
         {
             if (!initiated) return;
@@ -995,14 +1193,16 @@ namespace RootMotion.Dynamics
             switch (updateMode)
             {
                 case UpdateMode.FixedUpdate:
+                    if (!isActive && fixedFrame && OnRead != null) OnRead();
                     if (!fixedFrame && !interpolated) return;
                     break;
-                case UpdateMode.AnimatePhysics:
+                case UpdateMode.AnimatePhysics: // Legacy AnimatePhysics
                     if (!fixedFrame && !interpolated) return;
                     if (isActive && !fixedFrame) Read();
                     break;
                 case UpdateMode.Normal:
                     if (isActive) Read();
+                    else if (OnRead != null) OnRead();
                     break;
             }
 
@@ -1036,16 +1236,20 @@ namespace RootMotion.Dynamics
                 foreach (Muscle m in muscles) m.CalculateMappedVelocity();
             }
 
+            if (mapDisconnectedMuscles)
+            {
+                for (int i = 0; i < muscles.Length; i++) muscles[i].MapDisconnected();
+            }
+
             // Freezing
             if (freezeFlag) OnFreezeFlag();
         }
-
+        */
         // Moves the muscles to where their targets are.
         private void MoveToTarget()
         {
             if (PuppetMasterSettings.instance == null || (PuppetMasterSettings.instance != null && PuppetMasterSettings.instance.UpdateMoveToTarget(this)))
             {
-
                 foreach (Muscle m in muscles)
                 {
                     m.MoveToTarget();
@@ -1079,11 +1283,11 @@ namespace RootMotion.Dynamics
                 targetRoot.parent = targetParent;
                 Destroy(c);
 
-                targetMappedPositions[0] = p + targetDeltaRotation * (targetMappedPositions[0] - p) + targetDeltaPosition;
-                targetSampledPositions[0] = p + targetDeltaRotation * (targetSampledPositions[0] - p) + targetDeltaPosition;
+                muscles[0].targetMappedPosition = p + targetDeltaRotation * (muscles[0].targetMappedPosition - p) + targetDeltaPosition;
+                muscles[0].targetSampledPosition = p + targetDeltaRotation * (muscles[0].targetSampledPosition - p) + targetDeltaPosition;
 
-                targetMappedRotations[0] = targetDeltaRotation * targetMappedRotations[0];
-                targetSampledRotations[0] = targetDeltaRotation * targetSampledRotations[0];
+                muscles[0].targetMappedRotation = targetDeltaRotation * muscles[0].targetMappedRotation;
+                muscles[0].targetSampledRotation = targetDeltaRotation * muscles[0].targetSampledRotation;
 
                 if (teleportMoveToTarget)
                 {
@@ -1102,9 +1306,6 @@ namespace RootMotion.Dynamics
 
                 teleport = false;
             }
-
-            if (OnRead != null) OnRead();
-            foreach (BehaviourBase behaviour in behaviours) behaviour.OnRead();
 
             if (!isAlive) return;
 
@@ -1196,10 +1397,47 @@ namespace RootMotion.Dynamics
             }
         }
 
-        // Update internal collision ignoring
-        private void SetInternalCollisions(bool collide)
+        /// <summary>
+        /// Call this if you have made changes to muscle.props.internalCollisionIgnores at runtime.
+        /// </summary>
+        public void FlagInternalCollisionsForUpdate()
         {
-            if (internalCollisionsEnabled == collide) return;
+            if (manualInternalCollisionControl) return;
+            internalCollisionsEnabled = !internalCollisions;
+        }
+
+        private void UpdateInternalCollisions()
+        {
+            if (manualInternalCollisionControl) return;
+            if (internalCollisionsEnabled == internalCollisions) return;
+
+            if (internalCollisions) ResetInternalCollisions();
+            else IgnoreInternalCollisions();
+        }
+
+        public void UpdateInternalCollisions(Muscle m)
+        {
+            if (manualInternalCollisionControl) return;
+
+            foreach (Muscle otherMuscle in muscles)
+            {
+                if (otherMuscle != m)
+                {
+                    if (internalCollisions)
+                    {
+                        m.ResetInternalCollisions(otherMuscle, true);
+                    }
+                    else
+                    {
+                        m.IgnoreInternalCollisions(otherMuscle);
+                    }
+                }
+            }
+        }
+
+        private void IgnoreInternalCollisions()
+        {
+            if (manualInternalCollisionControl) return;
 
             for (int i = 0; i < muscles.Length; i++)
             {
@@ -1207,25 +1445,77 @@ namespace RootMotion.Dynamics
                 {
                     if (i != i2)
                     {
-                        muscles[i].IgnoreCollisions(muscles[i2], !collide);
+                        muscles[i].IgnoreInternalCollisions(muscles[i2]);
                     }
                 }
             }
 
-            internalCollisionsEnabled = collide;
+            internalCollisions = false;
+            internalCollisionsEnabled = false;
         }
 
-        // Update angular limit ignoring
-        private void SetAngularLimits(bool limited)
+        public void IgnoreInternalCollisions(Muscle m)
         {
-            if (angularLimitsEnabled == limited) return;
+            if (manualInternalCollisionControl) return;
+
+            foreach (Muscle otherMuscle in muscles)
+            {
+                if (otherMuscle != m)
+                {
+                    m.IgnoreInternalCollisions(otherMuscle);
+                }
+            }
+        }
+
+        private void ResetInternalCollisions()
+        {
+            if (manualInternalCollisionControl) return;
 
             for (int i = 0; i < muscles.Length; i++)
             {
-                muscles[i].IgnoreAngularLimits(!limited);
+                for (int i2 = i; i2 < muscles.Length; i2++)
+                {
+                    if (i != i2)
+                    {
+                        muscles[i].ResetInternalCollisions(muscles[i2], true);
+                    }
+                }
             }
 
-            angularLimitsEnabled = limited;
+            internalCollisions = true;
+            internalCollisionsEnabled = true;
+        }
+
+        public void ResetInternalCollisions(Muscle m, bool useInternalCollisionIgnores)
+        {
+            if (manualInternalCollisionControl) return;
+
+            foreach (Muscle otherMuscle in muscles)
+            {
+                if (otherMuscle != m)
+                {
+                    m.ResetInternalCollisions(otherMuscle, useInternalCollisionIgnores);
+                }
+            }
+        }
+
+        public void FlagAngularLimitsForUpdate()
+        {
+            if (manualAngularLimitControl) return;
+            angularLimitsEnabled = !angularLimits;
+        }
+
+        private void UpdateAngularLimits()
+        {
+            if (manualAngularLimitControl) return;
+            if (angularLimitsEnabled == angularLimits) return;
+
+            for (int i = 0; i < muscles.Length; i++)
+            {
+                if (!muscles[i].state.isDisconnected) muscles[i].IgnoreAngularLimits(!angularLimits);
+            }
+
+            angularLimitsEnabled = angularLimits;
         }
     }
 }

@@ -46,7 +46,7 @@ namespace RootMotion.Demos {
 
 		private void Respawn(Vector3 position, Quaternion rotation) {
 			puppet.puppetMaster.state = PuppetMaster.State.Alive;
-			puppet.puppetMaster.targetAnimator.Play(idleAnimation, 0, 0f);
+            if (puppet.puppetMaster.targetAnimator.gameObject.activeInHierarchy) puppet.puppetMaster.targetAnimator.Play(idleAnimation, 0, 0f);
             puppet.SetState(BehaviourPuppet.State.Puppet);
 			puppet.puppetMaster.Teleport(position, rotation, true);
 

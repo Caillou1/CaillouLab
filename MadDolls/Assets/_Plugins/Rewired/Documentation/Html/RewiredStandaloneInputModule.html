@@ -80,9 +80,11 @@
               <li><a href="InputBehaviors.html">Input Behaviors</a></li>
               <li><a href="Controllers.html">Controllers</a></li>
               <li><a href="ControllerMaps.html">Controller Maps</a></li>
+              <li><a href="ControllerTemplates.html">Controller Templates</a></li>
               <li><a href="MapCategories.html">Map Categories</a></li>
               <li><a href="Layouts.html">Layouts</a></li>
-              <li><a href="ControllerTemplates.html">Controller Templates</a></li>
+              <li><a href="LayoutManager.html">Layout Manager</a></li>
+              <li><a href="MapEnabler.html">Map Enabler</a></li>
               <li><a href="CustomControllers.html">Custom Controllers</a></li>
             </ul>
             <strong>Extras:</strong>
@@ -361,6 +363,11 @@ void SetSelected(GameObject selectableObject) {
     <p>Please refer to the <a href="http://docs.unity3d.com/Manual/UISystem.html" target="_blank">Unity documentation</a> for information on how to use Unity UI.</p>
     <p>&nbsp;</p>
     <hr />
+    <p><strong><a name="troubleshooting-exceptions-in-callbacks-changing-settings" id="troubleshooting-exceptions-in-callbacks-changing-settings"></a>Problem: Exceptions thrown when making changes to various properties in the Rewired Standalone Input Module from a UI button press</strong></p>
+    <p>You should not change certain properties in the Rewired Standalone Input Module from the callback of a UI button press or other UI event (the Action list, the Players list, Player Mouse list, etc.). The module executes its code sequentially, firing UI events synchronously, then continuing execution. If you change certain Rewired properties in the callback of one of these events, lists or objects may be change mid-execution causing it to throw an exception, for example, changing the list of Players that can control the UI in response to a UI button click. This list of Players will be changed, possible during iteration of the same list resulting in null reference exceptions or index out of range exceptions. This is akin to modifying a List in the middle of a foreach loop, which will throw an exception because they have included measures to watch for such illegal operations.</p>
+    <p>If you must change a Rewired property from a UI event, use a Coroutine to defer execution of the change until the end of the frame.</p>
+    <p>&nbsp;</p>
+    <hr />
     <h3><a name="faq" id="faq"></a>FAQ:</h3>
     <p class="question">Does it support multi-player UIs?</p>
     <p>Only partially through the use of <a href="#player-mouse">Player Mouse pointers</a>.</p>
@@ -377,7 +384,7 @@ void SetSelected(GameObject selectableObject) {
         
     </div>
   <div class="footer clearfix">
-   	<p class="left">Copyright &copy;2014-2018 <a href="http://guavaman.com" title="Guavaman Enterprises">Guavaman Enterprises</a>. All rights reserved. No materials may be reproduced without permission.</p>
+   	<p class="left">Copyright &copy;2014-2019 <a href="http://guavaman.com" title="Guavaman Enterprises">Guavaman Enterprises</a>. All rights reserved. No materials may be reproduced without permission.</p>
   	<p class="right"><a href="http://guavaman.com/projects/rewired" title="Return to Rewired Website">Return to Rewired Website</a></p>
   </div>
   <!-- end .content --></div>
