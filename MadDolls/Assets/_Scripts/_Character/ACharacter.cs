@@ -6,6 +6,7 @@ namespace Gameplay.Character
     public abstract class ACharacter : MonoBehaviour
     {
         [Header("Common Character Parameters")]
+        public bool AutoRegisterToGameManager = true;
         public Transform CharacterTransform;
         public Rigidbody CharacterRigidbody;
         public PuppetMaster PuppetMasterComponent;
@@ -23,6 +24,8 @@ namespace Gameplay.Character
 
         private void Start()
         {
+            if(AutoRegisterToGameManager)
+                Gameplay.Management.GameManager.Instance.RegisterCharacter(this);
             InitializeComponents();
         }
 

@@ -7,6 +7,7 @@ namespace Gameplay.Character
     public class CharacterComponentHealth : ACharacterComponent
     {
         public int MaxHealth;
+        public bool UseTraumaInsteadOfHealth = true;
         public GameObject HealthBarObject;
         public Slider HealthBarGreenSlider;
         public Slider HealthBarRedSlider;
@@ -32,15 +33,43 @@ namespace Gameplay.Character
 
         public override void UpdateComponent(float deltaTime)
         {
-            if (HealthBarRedSlider.value != HealthBarGreenSlider.value && (Time.time - LastHealthLostTime) >= TimeBeforeDecrementRedSlider)
+            if (HealthBarObject)
             {
-                HealthBarRedSlider.value = Mathf.LerpUnclamped(HealthBarRedSlider.value, HealthBarGreenSlider.value, Time.deltaTime);
+                if (HealthBarRedSlider.value != HealthBarGreenSlider.value && (Time.time - LastHealthLostTime) >= TimeBeforeDecrementRedSlider)
+                {
+                    HealthBarRedSlider.value = Mathf.LerpUnclamped(HealthBarRedSlider.value, HealthBarGreenSlider.value, Time.deltaTime);
+                }
             }
+            if (Input.GetKeyDown(KeyCode.Space)) ApplyDamage(0);
+            UpdateTrauma(deltaTime);
+        }
+
+        [Range(0f, 1f)] [SerializeField] private float trauma;
+        [SerializeField] private float traumaMultiplier = 5f;
+        [SerializeField] private float traumaPow = .3f;
+        [SerializeField] private float traumaDecay = 1.3f;
+
+        private float timeCounter;
+
+        public void UpdateTrauma(float deltaTime)
+        {
+            if (trauma > 0)
+            {
+                timeCounter += deltaTime * Mathf.Pow(trauma, traumaPow) * traumaMultiplier;
+                trauma -= deltaTime * traumaDecay * trauma;
+                if (trauma < .01f) trauma = 0;
+            }
+            controlledCharacter.PuppetMasterComponent.muscleWeight = 1 - trauma;
+            controlledCharacter.PuppetMasterComponent.pinWeight = 1 - trauma;
         }
 
         public void ApplyDamage(int amount)
         {
-            if (CurrentHealth > 0)
+            if (UseTraumaInsteadOfHealth)
+            {
+                trauma = Mathf.Clamp01(trauma + .2f);
+            }
+            else if (CurrentHealth > 0)
             {
                 CurrentHealth -= amount;
                 HealthBarGreenSlider.value = (float)CurrentHealth / MaxHealth;

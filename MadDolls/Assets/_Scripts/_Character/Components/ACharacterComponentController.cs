@@ -9,6 +9,7 @@ namespace Gameplay.Character
     {
         [Header("Debug")]
         public bool DebugDirections = true;
+
         public Vector3 LeftStickDirection { get; protected set; }
         public Vector3 RightStickDirection { get; protected set; }
 

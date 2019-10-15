@@ -47,7 +47,7 @@ public class CameraShake : MonoBehaviour
 
     private void Update()
     {
-        if(IsCameraShakeEnabled && Trauma > 0)
+        if (IsCameraShakeEnabled && Trauma > 0)
         {
             timeCounter += Time.deltaTime * Mathf.Pow(trauma, traumaPow) * traumaMultiplier;
             Vector3 newPos = GetVec3() * traumaMagnitude * Trauma;
@@ -55,7 +55,8 @@ public class CameraShake : MonoBehaviour
             cameraTransform.localRotation = Quaternion.Euler(newPos * traumaRotationMagnitude);
             Trauma -= Time.deltaTime * traumaDecay * Trauma;
             if (Trauma < .01f) Trauma = 0;
-        } else
+        }
+        else
         {
             Vector3 newPos = Vector3.Lerp(cameraTransform.localPosition, Vector3.zero, Time.deltaTime);
             cameraTransform.localPosition = newPos;
