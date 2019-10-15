@@ -66,7 +66,7 @@ public class KU : MonoBehaviour
         }
     }
 
-    public static void Log(object message, float duration = 5.0f, Color? color = null, bool logToScreen = true, bool logToConsole = true, Object context = null)
+    public static void Log(object message, float duration = 5.0f, Color? color = null, bool logToScreen = false, bool logToConsole = true, Object context = null)
     {
         if(logToConsole)
         {
@@ -79,7 +79,7 @@ public class KU : MonoBehaviour
         }
     }
 
-    public static void LogPermanent(string logKey, object message, Color? color = null, bool logToConsole = true, Object context = null) {
+    public static void LogPermanent(string logKey, object message, Color? color = null, bool logToConsole = false, Object context = null) {
         if(logToConsole) {
             Debug.Log(message, context);
         }
@@ -90,6 +90,7 @@ public class KU : MonoBehaviour
 
         permanentLogs[logKey].text = logKey + " : " + message.ToString();
         permanentLogs[logKey].color = color ?? defaultColor;
+        logPanelImage.enabled = Sys.UseLogPanel;
         LayoutRebuilder.ForceRebuildLayoutImmediate(logPanelRectTransform);
     }
 
@@ -103,8 +104,7 @@ public class KU : MonoBehaviour
     private static void LogToScreen(LogInfo log)
     {
         LogNumber++;
-        if (Sys.UseLogPanel && !logPanelImage.enabled)
-            logPanelImage.enabled = true;
+        logPanelImage.enabled = Sys.UseLogPanel;
         var text = Instantiate(Sys.DefaultLogText, punctualLogTransform);
         text.transform.SetAsFirstSibling();
         text.text = log.Message.ToString();
@@ -116,8 +116,7 @@ public class KU : MonoBehaviour
     private static void RemoveFromScreen(Text logText, float duration)
     {
         LogNumber--;
-        if (LogNumber < 1 || !Sys.UseLogPanel)
-            logPanelImage.enabled = false;
+        logPanelImage.enabled = LogNumber < 1;
         Destroy(logText.gameObject);
     }
 

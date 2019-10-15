@@ -3,44 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class GameManager : MonoBehaviour
+using Gameplay.Character;
+
+namespace Gameplay.Management
 {
-    public static GameManager Instance { private set; get; }
-
-    public List<Character> Characters = new List<Character>();
-    public List<Character> AliveCharacters
+    public class GameManager : MonoBehaviour
     {
-        get
-        {
-            return Characters.FindAll(c => c.CharacterHealth.IsAlive);
-        }
-    }
+        public static GameManager Instance { private set; get; }
 
-    private void Awake()
-    {
-        if (Instance == null)
+        public List<ACharacter> Characters = new List<ACharacter>();
+        public List<ACharacter> AliveCharacters
         {
-            Instance = this;
-        } else
-        {
-            Destroy(gameObject);
-            return;
+            get
+            {
+                return Characters.FindAll(c => c.CharacterHealth.IsAlive);
+            }
         }
 
-        //DontDestroyOnLoad(gameObject);
-    }
-
-    public void RegisterCharacter(Character character)
-    {
-        if(!Characters.Contains(character))
+        private void Awake()
         {
-            Characters.Add(character);
-            CameraFollow.Instance.RegisterTarget(character.CharacterTransform);
-        }
-    }
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
 
-    public List<Character> GetOpponents(Character myself)
-    {
-        return AliveCharacters.FindAll(c => c != myself);
+            //DontDestroyOnLoad(gameObject);
+        }
+
+        public void RegisterCharacter(ACharacter character)
+        {
+            if (!Characters.Contains(character))
+            {
+                Characters.Add(character);
+                CameraFollow.Instance.RegisterTarget(character.CharacterTransform);
+            }
+        }
+
+        public List<ACharacter> GetOpponents(ACharacter myself)
+        {
+            return AliveCharacters.FindAll(c => c != myself);
+        }
     }
 }

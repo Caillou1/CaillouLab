@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Gameplay.Character;
+using UnityEngine;
 
 public class AssaultRifleBulletObject : APoolObject
 {
@@ -28,7 +29,7 @@ public class AssaultRifleBulletObject : APoolObject
 
     private void OnCollisionEnter(Collision collision)
     {
-        var health = collision.transform.GetComponent<CharacterHealthComponent>();
+        var health = collision.transform.GetComponent<CharacterComponentHealth>();
         if(health != null)
         {
             health.ApplyDamage(10);

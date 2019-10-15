@@ -15,7 +15,7 @@ public abstract class AGenericPool<T> : MonoBehaviour where T : APoolObject
         Instance = this;
         tf = transform;
         Count = 0;
-        KU.StartTimer(DebugPoolCount, .1f, true);
+        //KU.StartTimer(DebugPoolCount, .1f, true);
     }
 
     public void DebugPoolCount() {

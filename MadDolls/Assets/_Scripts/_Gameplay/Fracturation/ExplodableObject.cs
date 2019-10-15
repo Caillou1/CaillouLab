@@ -1,4 +1,5 @@
 ﻿using System;
+using Gameplay.Character;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -63,7 +64,7 @@ public class ExplodableObject : MonoBehaviour, IExplodable
 
             foreach (var player in players)
             {
-                var health = player.GetComponent<CharacterHealthComponent>();
+                var health = player.GetComponent<CharacterComponentHealth>();
 
                 if (health != null)
                 {
